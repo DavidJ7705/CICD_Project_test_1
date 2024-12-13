@@ -8,20 +8,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Person {
-    private
-    String userId;
+    private String userId;
 
-    private
-    String name;
+    private String name;
 
-    private
-    String userName;
+    private String userName;
 
-    private
-    String email;
+    private String email;
 
-    private
-    String password;
+    private String password;
     //1 for user, 2 for mod
     private int userType;
     //FK
@@ -30,4 +25,6 @@ public class Person {
     private int courseId;
 
     private int commentId;
+
+
 }
