@@ -1,4 +1,4 @@
 package ie.atu.project.Clients;
 
-public class ProfileClient {
+public interface ProfileClient {
 }
