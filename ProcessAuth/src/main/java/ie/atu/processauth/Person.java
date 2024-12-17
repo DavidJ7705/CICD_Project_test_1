@@ -1,53 +1,46 @@
 package ie.atu.processauth;
 
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Data
-@NoArgsConstructor
+
 public class Person {
-    private
-    String userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
 
-    private
-    String name;
+    private String name;
 
-    private
-    String userName;
+    private String userName;
 
-    private
-    String email;
+    private String email;
 
-    private
-    String password;
+    private String password;
     //1 for user, 2 for mod
-    private int userType;
-    //FK
-    private int postId;
+    private int userType = 1;
+    public Person() {
+    }
 
-    private int courseId;
-
-    private int commentId;
-
-    public Person(String userId, String name, String userName, String email, String password, int userType, int postId, int courseId, int commentId) {
-        this.userId = userId;
+    public Person(String name, String userName, String email, String password) {
         this.name = name;
         this.userName = userName;
         this.email = email;
         this.password = password;
-        this.userType = userType;
-        this.postId = postId;
-        this.courseId = courseId;
-        this.commentId = commentId;
+        this.userType = 1;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -89,29 +82,5 @@ public class Person {
 
     public void setUserType(int userType) {
         this.userType = userType;
-    }
-
-    public int getPostId() {
-        return postId;
-    }
-
-    public void setPostId(int postId) {
-        this.postId = postId;
-    }
-
-    public int getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
-    }
-
-    public int getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
     }
 }
