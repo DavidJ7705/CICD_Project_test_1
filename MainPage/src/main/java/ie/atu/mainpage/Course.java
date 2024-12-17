@@ -11,7 +11,6 @@ import java.util.List;
 @Table(name = "course")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Course {
 
     @Id
@@ -23,4 +22,34 @@ public class Course {
 
     @ElementCollection
     private List<Long> moduleIds; // List of Module IDs related to this course
+
+    public Course(Long id, String name, List<Long> moduleIds) {
+        this.id = id;
+        this.name = name;
+        this.moduleIds = moduleIds;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Long> getModuleIds() {
+        return moduleIds;
+    }
+
+    public void setModuleIds(List<Long> moduleIds) {
+        this.moduleIds = moduleIds;
+    }
 }
