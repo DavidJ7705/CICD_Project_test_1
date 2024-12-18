@@ -1,22 +1,25 @@
 package ie.atu.mainpage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/main")
 public class MainPageController {
 
-    @Autowired
-    private MainPageService courseService;
+    private final MainPageService courseService;
+
+    public MainPageController(MainPageService courseService) {
+        this.courseService = courseService;
+    }
 
     // Get all courses
-    @GetMapping("/")
+    @GetMapping("/getall")
     public ResponseEntity<List<Course>> getAllCourses() {
-        return ResponseEntity.ok(courseService.getAllCourses());
+        List<Course> courses = courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
     }
 
     // Get a course by ID
@@ -24,6 +27,7 @@ public class MainPageController {
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
+
 
     // Add a new course
     @PostMapping("/")
