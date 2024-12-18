@@ -2,14 +2,19 @@ package ie.atu.mainpage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import java.util.List;
 
 
 @Service
 public class MainPageService {
 
-    @Autowired
     private CourseRepository courseRepository;
+    public MainPageService(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
 
     // Get all courses
     public List<Course> getAllCourses() {
@@ -22,6 +27,10 @@ public class MainPageService {
                 .orElseThrow(() -> new RuntimeException("Course not found: " + id));
     }
 
+
+
+
+
     // Add a new course
     public Course addCourse(Course course) {
         return courseRepository.save(course);
@@ -31,7 +40,6 @@ public class MainPageService {
     public Course updateCourse(Long id, Course updatedCourse) {
         Course course = getCourseById(id);
         course.setName(updatedCourse.getName());
-        course.setModuleIds(updatedCourse.getModuleIds());
         return courseRepository.save(course);
     }
 

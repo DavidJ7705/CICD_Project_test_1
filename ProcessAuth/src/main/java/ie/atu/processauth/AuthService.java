@@ -16,7 +16,7 @@ public class AuthService {
 
     private List<Person> personList = new ArrayList<>();
 
-    public String signUp(String name, String userName, String email, String password) {
+    public String signUp(String name, String userName, String email, String password, int courseId) {
         // Check if username already exists
         Optional<Person> existingPerson = personRepository.findByUserName(userName);
         if (existingPerson.isPresent()) {
@@ -24,7 +24,7 @@ public class AuthService {
         }
 
         // Create and save a new user
-        Person newPerson = new Person(name, userName, email, password);
+        Person newPerson = new Person(name, userName, email, password, courseId);
         personRepository.save(newPerson);
         return "User signed up successfully!";
     }

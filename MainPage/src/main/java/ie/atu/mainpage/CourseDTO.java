@@ -1,32 +1,15 @@
 package ie.atu.mainpage;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-@Entity
-@Table(name = "course")
-@Data
-public class Course {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CourseDTO {
     private Long courseId;
-
     private String name;
-
     private String description;
 
-    public Course(Long courseId, String name, String description) {
+    public CourseDTO(Long courseId, String name, String description) {
         this.courseId = courseId;
         this.name = name;
         this.description = description;
     }
-
-    public Course(){}
 
     public Long getCourseId() {
         return courseId;

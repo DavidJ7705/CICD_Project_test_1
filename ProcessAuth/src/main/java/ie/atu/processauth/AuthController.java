@@ -16,7 +16,7 @@ public class AuthController {
     // Sign-up endpoint
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Person person) {
-        String response = authService.signUp(person.getName(), person.getUserName(), person.getEmail(), person.getPassword());
+        String response = authService.signUp(person.getName(), person.getUserName(), person.getEmail(), person.getPassword(), person.getCourseId());
         return ResponseEntity.ok(response);
     }
 

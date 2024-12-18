@@ -23,16 +23,19 @@ public class Person {
     private String email;
 
     private String password;
+
+    private int courseId;
     //1 for user, 2 for mod
     private int userType = 1;
     public Person() {
     }
 
-    public Person(String name, String userName, String email, String password) {
+    public Person(String name, String userName, String email, String password, int courseId) {
         this.name = name;
         this.userName = userName;
         this.email = email;
         this.password = password;
+        this.courseId= courseId;
         this.userType = 1;
     }
 
@@ -76,6 +79,14 @@ public class Person {
         this.password = password;
     }
 
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
     public int getUserType() {
         return userType;
     }
@@ -83,4 +94,6 @@ public class Person {
     public void setUserType(int userType) {
         this.userType = userType;
     }
+
+
 }
