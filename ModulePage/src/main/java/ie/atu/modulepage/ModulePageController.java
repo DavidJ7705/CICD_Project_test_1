@@ -2,6 +2,8 @@ package ie.atu.modulepage;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 
 @RestController
@@ -17,11 +19,10 @@ public class ModulePageController {
 
     // Get all modules for a given course
     @GetMapping("/getall")
-    public ResponseEntity<List<Module>> getAllModules() {
-        List<Module> modules = moduleService.getAllModules();
+    public ResponseEntity<Map<String, Object>> getAllModules() {
+        Map<String, Object> modules = moduleService.getAllModules();
         return ResponseEntity.ok(modules);
     }
-
 
     // Get a specific module
     @GetMapping("/{id}")
