@@ -2,20 +2,32 @@ package ie.atu.modulepage;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ModulePageService {
 
     private final ModuleRepository moduleRepository;
 
-    public ModulePageService(ModuleRepository moduleRepository) {
+    private AuthClient authClient;
+
+    public ModulePageService(ModuleRepository moduleRepository, AuthClient authClient) {
         this.moduleRepository = moduleRepository;
+        this.authClient = authClient;
     }
 
     // Get all modules for a specific course
-    public List<Module> getAllModules() {
-        return moduleRepository.findAll();
+    public Map<String, Object> getAllModules() {
+        String signedUser = authClient.getSignedUser();
+        List <Module> modules = moduleRepository.findAll();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("signedUser", signedUser);
+        response.put("modules",modules);
+
+        return response;
     }
 
     // Get a module by ID
