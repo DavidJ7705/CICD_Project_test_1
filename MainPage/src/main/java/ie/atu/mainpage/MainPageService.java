@@ -15,6 +15,8 @@ public class MainPageService {
 
     private AuthClient authClient;
     private CourseRepository courseRepository;
+
+    private long selectedCourse;
     public MainPageService(CourseRepository courseRepository, AuthClient authClient) {
         this.courseRepository = courseRepository;
         this.authClient = authClient;
@@ -36,12 +38,10 @@ public class MainPageService {
 
     // Get a course by ID
     public Course getCourseById(Long id) {
+        selectedCourse = id;
         return courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found: " + id));
     }
-
-
-
 
 
     // Add a new course
@@ -60,4 +60,9 @@ public class MainPageService {
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
     }
+
+    public Long getSelectedCourse(){
+        return selectedCourse;
+    }
+
 }
