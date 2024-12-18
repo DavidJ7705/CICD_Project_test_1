@@ -3,7 +3,7 @@ package ie.atu.processauth;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/person")
+@RequestMapping("/auth")
 @RestController
 public class AuthController {
 
