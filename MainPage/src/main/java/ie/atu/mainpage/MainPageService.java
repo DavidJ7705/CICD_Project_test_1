@@ -3,6 +3,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import java.util.List;
@@ -11,14 +13,25 @@ import java.util.List;
 @Service
 public class MainPageService {
 
+    private AuthClient authClient;
     private CourseRepository courseRepository;
-    public MainPageService(CourseRepository courseRepository) {
+    public MainPageService(CourseRepository courseRepository, AuthClient authClient) {
         this.courseRepository = courseRepository;
+        this.authClient = authClient;
     }
 
     // Get all courses
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public Map<String, Object> getAllCourses() {
+        String signedUser = authClient.getSignedUser();
+
+        List<Course> courses = courseRepository.findAll();
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("signedUser", signedUser);
+        response.put("courses", courses);
+
+        return response;
     }
 
     // Get a course by ID

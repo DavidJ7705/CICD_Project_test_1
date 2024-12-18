@@ -1,9 +1,11 @@
 package ie.atu.mainpage;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/main")
@@ -17,9 +19,9 @@ public class MainPageController {
 
     // Get all courses
     @GetMapping("/getall")
-    public ResponseEntity<List<Course>> getAllCourses() {
-        List<Course> courses = courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<Map<String, Object>> getAllCourses() {
+        Map<String, Object> response = courseService.getAllCourses();
+        return ResponseEntity.ok(response);
     }
 
     // Get a course by ID

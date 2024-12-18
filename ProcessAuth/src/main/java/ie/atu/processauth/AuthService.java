@@ -10,6 +10,7 @@ import java.util.Optional;
 @Service
 public class AuthService {
     private final PersonRepository personRepository;
+    private String SignedUser;
     public AuthService(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
@@ -45,11 +46,17 @@ public class AuthService {
 
         // Check userType to determine the role
         if (person.getUserType() == 1) {
+            SignedUser = userName;
             return "Login successful! Welcome, " + userName + "!";
         } else if (person.getUserType() == 2) {
             return "Login successful! Welcome, Moderator!";
         } else {
             return "Unknown user role!";
         }
+
+    }
+
+    public String getSignedUser() {
+        return SignedUser;
     }
 }
