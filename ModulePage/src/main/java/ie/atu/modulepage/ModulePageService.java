@@ -13,9 +13,12 @@ public class ModulePageService {
 
     private AuthClient authClient;
 
-    public ModulePageService(ModuleRepository moduleRepository, AuthClient authClient) {
+    private MainClient mainClient;
+
+    public ModulePageService(ModuleRepository moduleRepository, AuthClient authClient, MainClient mainClient) {
         this.moduleRepository = moduleRepository;
         this.authClient = authClient;
+        this.mainClient = mainClient;
     }
 
     // Get all modules for a specific course
@@ -40,6 +43,18 @@ public class ModulePageService {
         return moduleRepository.findByCourseId(courseId);
     }
 
+    public Map<String, Object> getAllSelectedModules(){
+        String signedUser = authClient.getSignedUser();
+        long selectedCourse = mainClient.getSelectedCourse();
+        List <Module> modules = moduleRepository.findByCourseId(selectedCourse);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("signedUser", signedUser);
+        response.put("modules",modules);
+
+        return response;
+    }
+
     // Add a new module
     public Module addModule(Module module) {
         return moduleRepository.save(module);
@@ -57,4 +72,5 @@ public class ModulePageService {
     public void deleteModule(Long id) {
         moduleRepository.deleteById(id);
     }
+
 }

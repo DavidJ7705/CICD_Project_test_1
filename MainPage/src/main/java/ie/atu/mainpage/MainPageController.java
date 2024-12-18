@@ -49,5 +49,10 @@ public class MainPageController {
         courseService.deleteCourse(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/selectedCourse")
+    public Long getSelectedCourse() {
+        return courseService.getSelectedCourse();
+    }
 }
 

@@ -36,6 +36,11 @@ public class ModulePageController {
         return ResponseEntity.ok(modules);
     }
 
+    @GetMapping("/byselectedCourse")
+    public ResponseEntity<Map<String, Object>> getAllSelectedModules() {
+        Map<String, Object> modules = moduleService.getAllSelectedModules();
+        return ResponseEntity.ok(modules);
+    }
 
 
 
