@@ -1,6 +1,5 @@
 package ie.atu.modulepage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -9,20 +8,43 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/module")
 public class ModulePageController {
 
-    @Autowired
-    private ModulePageService moduleService;
+    private final ModulePageService moduleService;
+
+    public ModulePageController(ModulePageService moduleService) {
+        this.moduleService = moduleService;
+    }
+
 
     // Get all modules for a given course
-    @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<Module>> getModulesByCourse(@PathVariable Long courseId) {
-        return ResponseEntity.ok(moduleService.getModulesByCourseId(courseId));
+    @GetMapping("/getall")
+    public ResponseEntity<List<Module>> getAllModules() {
+        List<Module> modules = moduleService.getAllModules();
+        return ResponseEntity.ok(modules);
     }
+
 
     // Get a specific module
     @GetMapping("/{id}")
     public ResponseEntity<Module> getModuleById(@PathVariable Long id) {
         return ResponseEntity.ok(moduleService.getModuleById(id));
     }
+
+    @GetMapping("/bycourse/{courseId}")
+    public ResponseEntity<List<Module>>getModuleByCourse(@PathVariable Long courseId){
+        List<Module> modules = moduleService.getModuleByCourse(courseId);
+        return ResponseEntity.ok(modules);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     // Add a new module
     @PostMapping("/")

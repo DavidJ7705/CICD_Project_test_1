@@ -1,6 +1,5 @@
 package ie.atu.modulepage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,18 +7,25 @@ import java.util.List;
 @Service
 public class ModulePageService {
 
-    @Autowired
-    private ModuleRepository moduleRepository;
+    private final ModuleRepository moduleRepository;
+
+    public ModulePageService(ModuleRepository moduleRepository) {
+        this.moduleRepository = moduleRepository;
+    }
 
     // Get all modules for a specific course
-    public List<Module> getModulesByCourseId(Long courseId) {
-        return moduleRepository.findByCourseId(courseId);
+    public List<Module> getAllModules() {
+        return moduleRepository.findAll();
     }
 
     // Get a module by ID
     public Module getModuleById(Long id) {
         return moduleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Module not found: " + id));
+    }
+
+    public List<Module> getModuleByCourse(Long courseId){
+        return moduleRepository.findByCourseId(courseId);
     }
 
     // Add a new module
