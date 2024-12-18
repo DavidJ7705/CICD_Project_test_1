@@ -2,13 +2,9 @@ package ie.atu.postpage;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Entity
-@Table(name = "post")
 @Data
-@NoArgsConstructor
 
 public class Post {
 
@@ -25,11 +21,16 @@ public class Post {
     @Column(nullable = false)
     private Long moduleId; // Links to Module ID
 
-    public Post(Long id, String title, String content, Long moduleId) {
+    private Long userId;
+
+    public Post(){}
+
+    public Post(Long id, String title, String content, Long moduleId, Long userId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.moduleId = moduleId;
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -62,5 +63,13 @@ public class Post {
 
     public void setModuleId(Long moduleId) {
         this.moduleId = moduleId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
