@@ -26,4 +26,9 @@ public class AuthController {
         String response = authService.login(loginRequest.getUserName(), loginRequest.getPassword());
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/signedUser")
+    public String getSignedUser() {
+        return authService.getSignedUser();
+    }
 }

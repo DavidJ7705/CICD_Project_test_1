@@ -67,6 +67,17 @@
             <version>8.0.33</version> <!-- Use the latest stable version -->
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ie.atu</groupId>
+            <artifactId>ProcessAuth</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
