@@ -1,6 +1,7 @@
 package ie.atu.processauth;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/auth")
@@ -20,8 +21,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // Login endpoint
+
+
     @PostMapping("/login")
+    @ResponseBody
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         String response = authService.login(loginRequest.getUserName(), loginRequest.getPassword());
         return ResponseEntity.ok(response);
