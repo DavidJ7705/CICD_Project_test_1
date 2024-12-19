@@ -23,7 +23,7 @@ public class MainPageService {
 
     // Get all courses
     public Map<String, Object> getAllCourses() {
-        String signedUser = authClient.getSignedUser();
+        String signedUser = authClient.getSignedUsername();
 
         List<Course> courses = courseRepository.findAll();
 
@@ -45,6 +45,24 @@ public class MainPageService {
         selectedCourse = course.getName();
         return course;
     }
+
+
+
+    public Map<String, String> getSignedInUserInfo() {
+        String signedUsername = authClient.getSignedUsername();  // Get signed-in user's name
+        String signedName = authClient.getSignedName();
+        String signedEmail = authClient.getSignedEmail();
+        // You might also want to call another endpoint or method to get the user's email if needed
+
+        Map<String, String> userInfo = new HashMap<>();
+        userInfo.put("userName", signedUsername);
+        userInfo.put("Name", signedName);
+        userInfo.put("Email", signedEmail);
+
+        return userInfo;
+    }
+
+
 
 
     // Add a new course

@@ -10,5 +10,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     // Custom method to find a person by username
     Optional<Person> findByUserName(String userName);
+
 }
 

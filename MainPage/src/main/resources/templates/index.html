@@ -52,8 +52,9 @@
 
         header .profile-section {
             display: flex;
-            align-items: center;
-            gap: 15px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
         }
 
         header .profile-section img {
@@ -156,11 +157,8 @@
         <input type="text" placeholder="Search across the site..." />
     </div>
     <div class="profile-section">
-        <img src="https://via.placeholder.com/40" alt="Profile Picture">
-        <div>
-            <h4>Kishore</h4>
-            <p>kishore@example.com</p>
-        </div>
+        <h4 id="userName">User's Name</h4>
+        <p id="userEmail">User's Email</p>
     </div>
 </header>
 <main>
@@ -178,8 +176,24 @@
 </footer>
 
 <script>
-    // Fetch the course data from the backend endpoint and display it
     window.onload = function() {
+        // Fetch signed-in user info
+        fetch('/main/getSignedInUser')
+            .then(response => response.json())
+            .then(userData => {
+                // Ensure the keys match those returned from the backend (case-sensitive)
+                const signedInName = userData.Name;  // Should match the key in your Map from AuthController
+                const signedEmail = userData.Email;  // Should match the key in your Map from AuthController
+
+                // Update the profile section with the signed-in user's info
+                document.querySelector('#userName').textContent = signedInName;
+                document.querySelector('#userEmail').textContent = signedEmail;
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
+
+        // Fetch courses data
         fetch('/main/getall')
             .then(response => response.json())
             .then(data => {
@@ -188,7 +202,7 @@
                     const feedItem = document.createElement('div');
                     feedItem.classList.add('feed-item');
 
-                    const courseName = document.createElement('p');
+                    const courseName = document.createElement('h5');
                     courseName.textContent = course.name;
                     feedItem.appendChild(courseName);
 
@@ -208,7 +222,7 @@
                 console.error('Error fetching course data:', error);
             });
     };
-</script>
 
+</script>
 </body>
 </html>

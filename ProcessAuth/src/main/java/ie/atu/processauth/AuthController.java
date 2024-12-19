@@ -29,17 +29,27 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         String response = authService.login(loginRequest.getUserName(), loginRequest.getPassword());
-
         // Check if login was successful
         if (response.startsWith("Login successful")) {
             return ResponseEntity.ok("success");  // Just return success
         } else {
             return ResponseEntity.ok(response); // Return failure message
         }
+
     }
 
-    @GetMapping("/signedUser")
-    public String getSignedUser() {
-        return authService.getSignedUser();
+    @GetMapping("/signedUsername")
+    public String getSignedUsername() {
+        return authService.getSignedUsername();
+    }
+
+    @GetMapping("/signedName")
+    public String getSignedName() {
+        return authService.getSignedName();
+    }
+
+    @GetMapping("/signedEmail")
+    public String getSignedEmail() {
+        return authService.getSignedEmail();
     }
 }
