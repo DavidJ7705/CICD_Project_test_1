@@ -13,14 +13,15 @@ public class Post {
     private Long id;
 
     @Column(nullable = false)
+    private Long moduleId; // Links to Module ID
+
+    @Column(nullable = false)
     private String title;
 
     @Column(length = 1000)
     private String content;
 
     @Column(nullable = false)
-    private Long moduleId; // Links to Module ID
-
     private Long userId;
 
     public Post(){}

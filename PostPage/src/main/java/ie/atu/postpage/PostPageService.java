@@ -3,13 +3,36 @@ package ie.atu.postpage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PostPageService {
 
-    @Autowired
     private PostRepository postRepository;
+
+    private AuthClient authClient;
+    private MainClient mainClient;
+
+    public PostPageService (PostRepository postRepository, AuthClient authClient, MainClient mainClient){
+        this.postRepository = postRepository;
+        this.authClient = authClient;
+        this.mainClient = mainClient;
+    }
+
+    public Map<String, Object> getAllPosts(){
+        String signedUser = authClient.getSignedUser();
+        String selectedCourse = mainClient.getCourseName();
+        List <Post> posts = postRepository.findAll();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("signedUser", signedUser);
+        response.put("Posts", posts);
+
+        return response;
+    }
+
 
     // Get posts by module ID
     public List<Post> getPostsByModuleId(Long moduleId) {
