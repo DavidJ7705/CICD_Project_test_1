@@ -17,10 +17,17 @@ public class ModulePageController {
     }
 
 
-    // Get all modules for a given course
+    //Return all modules.
     @GetMapping("/getall")
     public ResponseEntity<Map<String, Object>> getAllModules() {
         Map<String, Object> modules = moduleService.getAllModules();
+        return ResponseEntity.ok(modules);
+    }
+
+    //This will return list of modules when you clicked on specific course.
+    @GetMapping("/byselectedCourse")
+    public ResponseEntity<Map<String, Object>> getAllSelectedModules() {
+        Map<String, Object> modules = moduleService.getAllSelectedModules();
         return ResponseEntity.ok(modules);
     }
 
@@ -36,11 +43,18 @@ public class ModulePageController {
         return ResponseEntity.ok(modules);
     }
 
-    @GetMapping("/byselectedCourse")
-    public ResponseEntity<Map<String, Object>> getAllSelectedModules() {
-        Map<String, Object> modules = moduleService.getAllSelectedModules();
-        return ResponseEntity.ok(modules);
+    @GetMapping("/selectedModule")
+    public Long getSelectedModule(){
+        return moduleService.getSelectedModule();
     }
+
+    @GetMapping("/getModuleName")
+    public String getModuleName(){
+        return moduleService.getModuleName();
+    }
+
+
+
 
 
 

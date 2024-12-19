@@ -15,19 +15,36 @@ public class PostPageService {
     private AuthClient authClient;
     private MainClient mainClient;
 
-    public PostPageService (PostRepository postRepository, AuthClient authClient, MainClient mainClient){
+    private ModuleClient moduleClient;
+
+    public PostPageService (PostRepository postRepository, AuthClient authClient, MainClient mainClient, ModuleClient moduleClient){
         this.postRepository = postRepository;
         this.authClient = authClient;
         this.mainClient = mainClient;
+        this.moduleClient = moduleClient;
     }
 
     public Map<String, Object> getAllPosts(){
         String signedUser = authClient.getSignedUser();
-        String selectedCourse = mainClient.getCourseName();
         List <Post> posts = postRepository.findAll();
+        Map<String, Object> response = new HashMap<>();
+        response.put("Signed In User", signedUser);
+        response.put("Posts", posts);
+
+        return response;
+    }
+
+    public Map<String, Object> getPostsBySelectedCourse(){
+        String signedUser = authClient.getSignedUser();
+        String selectedCourse = mainClient.getCourseName();
+        String selectedModule = moduleClient.getModuleName();
+        long selectedModuleId = moduleClient.getSelectedModule();
+        List <Post> posts = postRepository.findByModuleId(selectedModuleId);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("signedUser", signedUser);
+        response.put("Signed In User", signedUser);
+        response.put("Selected Course", selectedCourse);
+        response.put("Selected Module", selectedModule);
         response.put("Posts", posts);
 
         return response;
