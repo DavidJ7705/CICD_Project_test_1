@@ -5,13 +5,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/post")
 public class PostPageController {
 
-    @Autowired
     private PostPageService postService;
+    public PostPageController (PostPageService postService)
+    {
+        this.postService = postService;
+    }
+
+    @GetMapping ("/getall")
+    public ResponseEntity<Map<String, Object>> getAllPosts() {
+        Map<String, Object> posts = postService.getAllPosts();
+        return ResponseEntity.ok(posts);
+    }
+
 
     // Get posts by module ID
     @GetMapping("/module/{moduleId}")

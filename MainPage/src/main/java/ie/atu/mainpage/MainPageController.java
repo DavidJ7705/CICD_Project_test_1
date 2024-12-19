@@ -1,10 +1,8 @@
 package ie.atu.mainpage;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -52,7 +50,12 @@ public class MainPageController {
 
     @GetMapping("/selectedCourse")
     public Long getSelectedCourse() {
-        return courseService.getSelectedCourse();
+        return courseService.getSelectedCourseId();
+    }
+
+    @GetMapping("/getCourseName")
+    public String getCourseName(){
+        return courseService.getCourseName();
     }
 }
 

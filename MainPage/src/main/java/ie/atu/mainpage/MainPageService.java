@@ -1,11 +1,8 @@
 package ie.atu.mainpage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -16,7 +13,9 @@ public class MainPageService {
     private AuthClient authClient;
     private CourseRepository courseRepository;
 
-    private long selectedCourse;
+    private long selectedCourseId;
+    private String selectedCourse;
+
     public MainPageService(CourseRepository courseRepository, AuthClient authClient) {
         this.courseRepository = courseRepository;
         this.authClient = authClient;
@@ -30,17 +29,21 @@ public class MainPageService {
 
         Map<String, Object> response = new HashMap<>();
 
-        response.put("signedUser", signedUser);
-        response.put("courses", courses);
+        response.put("Signed In User", signedUser);
+        response.put("Courses", courses);
 
         return response;
     }
 
     // Get a course by ID
     public Course getCourseById(Long id) {
-        selectedCourse = id;
-        return courseRepository.findById(id)
+
+        Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found: " + id));
+
+        selectedCourseId = id;
+        selectedCourse = course.getName();
+        return course;
     }
 
 
@@ -61,7 +64,11 @@ public class MainPageService {
         courseRepository.deleteById(id);
     }
 
-    public Long getSelectedCourse(){
+    public Long getSelectedCourseId(){
+        return selectedCourseId;
+    }
+
+    public String getCourseName(){
         return selectedCourse;
     }
 

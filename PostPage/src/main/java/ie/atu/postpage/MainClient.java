@@ -1,4 +1,4 @@
-package ie.atu.modulepage;
+package ie.atu.postpage;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

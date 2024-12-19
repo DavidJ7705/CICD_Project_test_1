@@ -45,12 +45,14 @@ public class ModulePageService {
 
     public Map<String, Object> getAllSelectedModules(){
         String signedUser = authClient.getSignedUser();
-        long selectedCourse = mainClient.getSelectedCourse();
-        List <Module> modules = moduleRepository.findByCourseId(selectedCourse);
+        long selectedCourseId = mainClient.getSelectedCourse();
+        String selectedCourse = mainClient.getCourseName();
+        List <Module> modules = moduleRepository.findByCourseId(selectedCourseId);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("signedUser", signedUser);
-        response.put("modules",modules);
+        response.put("Signed In User", signedUser);
+        response.put("Selected Course", selectedCourse);
+        response.put("Modules",modules);
 
         return response;
     }
