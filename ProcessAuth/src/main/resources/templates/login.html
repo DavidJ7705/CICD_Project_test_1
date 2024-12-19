@@ -182,7 +182,14 @@
       body: JSON.stringify(data)
     })
             .then(response => response.text())
-            .then(result => alert(result))
+            .then(result => {
+              if (result === "success") {
+                // Redirect to /main/viewall if login is successful
+                window.location.replace("http://localhost:8080/main/viewall");
+              } else {
+                alert(result); // Show the error message if login fails
+              }
+            })
             .catch(error => alert('Error: ' + error));
   });
 </script>

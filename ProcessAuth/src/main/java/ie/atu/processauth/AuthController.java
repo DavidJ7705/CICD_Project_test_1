@@ -3,9 +3,11 @@ package ie.atu.processauth;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RequestMapping("/auth")
 @RestController
+@CrossOrigin(origins = "http://localhost:8083") // Enable CORS for this controller
 public class AuthController {
 
     private final AuthService authService;
@@ -22,12 +24,18 @@ public class AuthController {
     }
 
 
-
+    // Login endpoint with redirect
+    // Login endpoint with simplified response
     @PostMapping("/login")
-    @ResponseBody
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         String response = authService.login(loginRequest.getUserName(), loginRequest.getPassword());
-        return ResponseEntity.ok(response);
+
+        // Check if login was successful
+        if (response.startsWith("Login successful")) {
+            return ResponseEntity.ok("success");  // Just return success
+        } else {
+            return ResponseEntity.ok(response); // Return failure message
+        }
     }
 
     @GetMapping("/signedUser")
