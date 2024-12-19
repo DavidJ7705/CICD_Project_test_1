@@ -15,6 +15,9 @@ public class ModulePageService {
 
     private MainClient mainClient;
 
+    private long selectedModuleId;
+    private String selectedModule;
+
     public ModulePageService(ModuleRepository moduleRepository, AuthClient authClient, MainClient mainClient) {
         this.moduleRepository = moduleRepository;
         this.authClient = authClient;
@@ -35,8 +38,13 @@ public class ModulePageService {
 
     // Get a module by ID
     public Module getModuleById(Long id) {
-        return moduleRepository.findById(id)
+        Module module = moduleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Module not found: " + id));
+
+        selectedModuleId = id;
+        selectedModule = module.getName();
+
+        return module;
     }
 
     public List<Module> getModuleByCourse(Long courseId){
@@ -55,6 +63,14 @@ public class ModulePageService {
         response.put("Modules",modules);
 
         return response;
+    }
+
+    public Long getSelectedModule(){
+        return selectedModuleId;
+    }
+
+    public String getModuleName(){
+        return selectedModule;
     }
 
     // Add a new module

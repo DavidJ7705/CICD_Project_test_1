@@ -15,14 +15,14 @@ public class MainPageController {
         this.courseService = courseService;
     }
 
-    // Get all courses
+    //This is basically what main page will looks like, it will be a list of courses and descriptions
     @GetMapping("/getall")
     public ResponseEntity<Map<String, Object>> getAllCourses() {
         Map<String, Object> response = courseService.getAllCourses();
         return ResponseEntity.ok(response);
     }
 
-    // Get a course by ID
+    //This happens when you click a specific course on the webpage. It then will redirect you to the module page, where it will be a list of modules of that specific course the user clicked.
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
