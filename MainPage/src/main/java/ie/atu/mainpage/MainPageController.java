@@ -27,7 +27,11 @@ public class MainPageController {
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
-
+    @GetMapping("/getSignedInUser")
+    public ResponseEntity<Map<String, String>> getSignedInUserInfo() {
+        Map<String, String> userInfo = courseService.getSignedInUserInfo();
+        return ResponseEntity.ok(userInfo);
+    }
 
     // Add a new course
     @PostMapping("/")
