@@ -3,6 +3,7 @@ package ie.atu.mainpage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -61,6 +62,11 @@ public class MainPageController {
     @GetMapping("/getCourseName")
     public String getCourseName(){
         return courseService.getCourseName();
+    }
+    @GetMapping("/SignUpCourses")
+    public ResponseEntity<List<Map<String, String>>> SignUpCourses() {
+        List<Map<String, String>> response = courseService.SignUpCourses(); // Assume it returns a List<Map>
+        return ResponseEntity.ok(response);
     }
 }
 

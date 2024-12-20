@@ -16,4 +16,9 @@ public class WebPageController {
         System.out.println("GET Login page endpoint hit!\nDisplaying webpage");  // Add this line
         return "login";
     }
+    @GetMapping("/signup")
+    public String signupPage() {
+        System.out.println("GET Signup page endpoint hit!\nDisplaying webpage");  // Add this line
+        return "signup";
+    }
 }

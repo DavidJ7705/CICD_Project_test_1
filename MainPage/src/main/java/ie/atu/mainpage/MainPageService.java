@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -88,6 +89,17 @@ public class MainPageService {
 
     public String getCourseName(){
         return selectedCourse;
+    }
+
+    public List<Map<String, String>> SignUpCourses() {
+        return courseRepository.findAll().stream()
+                .map(course -> {
+                    Map<String, String> courseMap = new HashMap<>();
+                    courseMap.put("id", String.valueOf(course.getCourseId()));
+                    courseMap.put("name", course.getName());
+                    return courseMap;
+                })
+                .collect(Collectors.toList());
     }
 
 }

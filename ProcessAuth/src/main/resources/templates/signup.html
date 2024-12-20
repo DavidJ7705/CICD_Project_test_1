@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #FFA500, #FFC1A1);
+        }
+
+        .container {
+            display: flex;
+            max-width: 1000px;
+            width: 90%;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #b92b27;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select {
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #b92b27;
+            color: #fff;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background: #a02422;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-link {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .login-link a {
+            color: #b92b27;
+            text-decoration: none;
+        }
+
+        button:focus {
+            outline: none;
+            color: #fff;
+        }
+
+        .image-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .image {
+            background: #ccc;
+            width: 100%;
+            height: 100%;
+        }
+
+        .text-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .image-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 5;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-container">
+        <div class="logo">Spreadit</div>
+        <form id="signupForm">
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="text" id="userName" name="userName" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="text" id="name" name="name" placeholder="Name" required>
+            <select id="course" name="course" required>
+                <option value="" disabled selected>Select your course</option>
+            </select>
+            <button type="submit">Sign Up</button>
+            <p class="login-link">
+                Already have an account? <a href="http://localhost:8083/auth/login">Log In</a>
+            </p>
+        </form>
+    </div>
+    <div class="image-container">
+        <div class="image-grid">
+            <div class="image"></div>
+            <div class="image"></div>
+            <div class="image"></div>
+            <div class="image"></div>
+            <div class="image"></div>
+            <div class="image"></div>
+            <div class="image"></div>
+            <div class="image"></div>
+        </div>
+        <div class="text-overlay">Join Us</div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("http://localhost:8080/main/SignUpCourses")
+            .then(response => response.json()) // Directly parse JSON
+            .then(data => {
+                console.log("Courses fetched successfully:", data); // Debug log
+                const courseDropdown = document.getElementById("course");
+                data.forEach(course => {
+                    const option = document.createElement("option");
+                    option.value = course.id;
+                    option.textContent = course.name;
+                    courseDropdown.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching courses:", error); // Log errors
+                alert("Failed to load courses. Please try again later.");
+            });
+    });
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const data = {
+            email: document.getElementById('email').value,
+            userName: document.getElementById('userName').value,
+            password: document.getElementById('password').value,
+            name: document.getElementById('name').value,
+            course: document.getElementById('course').value
+        };
+
+        fetch('/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.text())
+            .then(result => {
+                if (result === "success") {
+                    window.location.replace("http://localhost:8080/main/viewall");
+                } else {
+                    alert(result);
+                }
+            })
+            .catch(error => alert('Error: ' + error));
+    });
+</script>
+</body>
+</html>
