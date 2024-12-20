@@ -44,7 +44,16 @@ public class ModulePageController {
         List<Module> modules = moduleService.getModuleByCourse(courseId);
         return ResponseEntity.ok(modules);
     }
-
+    @GetMapping("/getSignedInUser")
+    public ResponseEntity<Map<String, String>> getSignedInUserInfo() {
+        Map<String, String> userInfo = moduleService.getSignedInUserInfo();
+        return ResponseEntity.ok(userInfo);
+    }
+    @GetMapping("/getallcourses")
+    public ResponseEntity<Map<String, Object>> getAllCourses() {
+        Map<String, Object> response = moduleService.getAllCourses();
+        return ResponseEntity.ok(response);
+    }
     @GetMapping("/selectedModule")
     public Long getSelectedModule(){
         return moduleService.getSelectedModule();
@@ -54,19 +63,6 @@ public class ModulePageController {
     public String getModuleName(){
         return moduleService.getModuleName();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Add a new module
     @PostMapping("/")
