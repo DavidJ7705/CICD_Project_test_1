@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.List;
+import java.util.Map;
+
 @RequestMapping("/auth")
 @RestController
 @CrossOrigin(origins = "http://localhost:8083") // Enable CORS for this controller
@@ -56,4 +59,12 @@ public class AuthController {
     public String getSignedEmail() {
         return authService.getSignedEmail();
     }
+
+
+    @GetMapping("/fetchcourses")
+    public ResponseEntity<List<Map<String, String>>> fetchAllCourses() {
+        List<Map<String, String>> courses = authService.fetchCourses();
+        return ResponseEntity.ok(courses);
+    }
+
 }
