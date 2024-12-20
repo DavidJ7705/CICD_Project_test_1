@@ -18,7 +18,6 @@
             color: #333;
         }
 
-        /* Header */
         header {
             background-color: #b92b27;
             color: white;
@@ -35,7 +34,7 @@
         }
 
         header .search-bar {
-            flex: 2;
+            flex: 1;
             display: flex;
             justify-content: center;
         }
@@ -52,21 +51,14 @@
 
         header .profile-section {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-        }
-
-        header .profile-section img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid white;
+            align-items: center;
+            gap: 10px;
         }
 
         header .profile-section div {
             color: white;
             font-size: 14px;
+            text-align: right;
         }
 
         header .profile-section div h4 {
@@ -74,35 +66,53 @@
             margin-bottom: 2px;
         }
 
-        /* Main Content */
         main {
-            padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: row;
+            height: calc(100vh - 60px);
+            padding: 20px;
             gap: 20px;
         }
 
-        .feed {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
+        .sidebar-left, .sidebar-right {
+            width: 20%;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
         }
 
-        .feed h3 {
+        .sidebar-left h3, .sidebar-right h3 {
+            color: #b92b27;
+            margin-bottom: 10px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .content-center {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .content-center h3 {
+            color: #b92b27;
             margin-bottom: 15px;
             font-size: 24px;
-            color: #b92b27;
             text-align: center;
         }
 
         .feed-item {
             margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .feed-item p {
@@ -115,16 +125,36 @@
             font-size: 14px;
             color: #777;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
         .feed-item a {
             color: #b92b27;
             text-decoration: none;
             font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: 1px solid #b92b27;
+            border-radius: 5px;
+            background: #fff;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Footer */
+        .feed-item a:hover {
+            background: #b92b27;
+            color: #fff;
+        }
+
+        .user-course-box {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
         footer {
             background: #f8f8f8;
             padding: 10px 20px;
@@ -148,42 +178,39 @@
         footer ul li a:hover {
             text-decoration: underline;
         }
-
-        /* Button Styles */
-        #view-all-courses {
-            background-color: #b92b27;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #view-all-courses:hover {
-            background-color: #9a1f1b;
-        }
     </style>
 </head>
 <body>
 <header>
     <div class="logo">Spreadit</div>
     <div class="search-bar">
-        <input type="text" placeholder="Search across the site..." />
+        <input type="text" placeholder="Search across the site...">
     </div>
     <div class="profile-section">
-        <h4 id="userName">User's Name</h4>
-        <p id="userEmail">User's Email</p>
+        <div>
+            <h4 id="userName">User's Name</h4>
+            <p id="userEmail">User's Email</p>
+        </div>
     </div>
 </header>
 <main>
-    <section class="feed">
-        <h3>Courses</h3>
-        <div id="course-feed"></div>
-        <!-- Button to view all courses -->
-        <button id="view-all-courses" style="display:none;">View All Courses</button>
-    </section>
+    <!-- Left Sidebar -->
+    <div class="sidebar-left">
+        <h3>All Courses</h3>
+        <div id="all-courses"></div>
+    </div>
+
+    <!-- Center Content -->
+    <div class="content-center">
+        <h3>Your Feed</h3>
+        <div class="user-course-box" id="user-course"></div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar-right">
+        <h3>Other Features</h3>
+        <p>Additional content can go here.</p>
+    </div>
 </main>
 <footer>
     <ul>
@@ -194,89 +221,70 @@
 </footer>
 
 <script>
-    window.onload = function() {
-        // Fetch signed-in user info
-        fetch('/main/getSignedInUser')
+    window.onload = function () {
+        const allCoursesDiv = document.getElementById('all-courses');
+        const userCourseDiv = document.getElementById('user-course');
+
+        // Fetch all courses
+        fetch('/main/getall')
             .then(response => response.json())
-            .then(userData => {
-                const signedInName = userData.Name;
-                const signedEmail = userData.Email;
+            .then(data => {
+                allCoursesDiv.innerHTML = '';
+                data.Courses.forEach(course => {
+                    const courseItem = document.createElement('div');
+                    courseItem.classList.add('feed-item');
 
-                // Update the profile section with the signed-in user's info
-                document.querySelector('#userName').textContent = signedInName;
-                document.querySelector('#userEmail').textContent = signedEmail;
+                    const courseName = document.createElement('p');
+                    courseName.textContent = course.name;
+                    courseItem.appendChild(courseName);
 
-                // Show the user's assigned course after login
-                fetch('/main/userCourse')
-                    .then(response => response.json())
-                    .then(data => {
-                        const courseDetails = data.courseDetails;  // Access course details from the response
-                        const courseName = courseDetails.name; // Access course name
-                        const courseDescription = courseDetails.description; // Access course description
+                    const enterButton = document.createElement('a');
+                    enterButton.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`;
+                    enterButton.textContent = 'Enter';
+                    courseItem.appendChild(enterButton);
 
-                        // Now use these values to update the UI
-                        const courseFeed = document.getElementById('course-feed');
-                        courseFeed.innerHTML = '';  // Clear any previous content
-
-                        const feedItem = document.createElement('div');
-                        feedItem.classList.add('feed-item');
-
-                        const courseNameElement = document.createElement('h5');
-                        courseNameElement.textContent = courseName || 'No course name available';  // Display course name or fallback text
-                        feedItem.appendChild(courseNameElement);
-
-                        const courseDescriptionElement = document.createElement('span');
-                        courseDescriptionElement.textContent = courseDescription || 'No description available';  // Display description or fallback text
-                        feedItem.appendChild(courseDescriptionElement);
-
-                        const courseLink = document.createElement('a');
-                        courseLink.href = '#'; // You can link to the actual course details page
-                        courseLink.textContent = 'Enter';  // Button or link text
-                        feedItem.appendChild(courseLink);
-
-                        courseFeed.appendChild(feedItem);
-                    })
-                    .catch(error => {
-                        console.error("Error fetching course data:", error);
-                        document.getElementById('course-feed').innerHTML = '<p>Error loading course information.</p>';
-                    });
-
-                // Event listener for viewing all courses
-                document.getElementById('view-all-courses').addEventListener('click', function() {
-                    fetch('/main/getall')
-                        .then(response => response.json())
-                        .then(data => {
-                            const courseFeed = document.getElementById('course-feed');
-                            courseFeed.innerHTML = ''; // Clear the feed
-
-                            data.Courses.forEach(course => {
-                                const feedItem = document.createElement('div');
-                                feedItem.classList.add('feed-item');
-
-                                const courseName = document.createElement('h5');
-                                courseName.textContent = course.name;
-                                feedItem.appendChild(courseName);
-
-                                const courseDescription = document.createElement('span');
-                                courseDescription.textContent = course.description;
-                                feedItem.appendChild(courseDescription);
-
-                                const courseLink = document.createElement('a');
-                                courseLink.href = '#'; // Link to course details
-                                courseLink.textContent = 'Enter';
-                                feedItem.appendChild(courseLink);
-
-                                courseFeed.appendChild(feedItem);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching all course data:', error);
-                        });
+                    allCoursesDiv.appendChild(courseItem);
                 });
             })
             .catch(error => {
-                console.error('Error fetching user data:', error);
+                console.error('Error fetching courses:', error);
             });
+
+        // Fetch user-specific course
+        fetch('/main/userCourse')
+            .then(response => response.json())
+            .then(courseData => {
+                if (courseData && courseData.courseDetails) {
+                    const courseDetails = courseData.courseDetails;
+
+                    const courseName = document.createElement('p');
+                    courseName.textContent = courseDetails.name;
+                    userCourseDiv.appendChild(courseName);
+
+                    const courseDescription = document.createElement('span');
+                    courseDescription.textContent = courseDetails.description;
+                    userCourseDiv.appendChild(courseDescription);
+
+                    const enterButton = document.createElement('a');
+                    enterButton.href = `http://localhost:8081/module/view/bycourse/${courseDetails.courseId}`;
+                    enterButton.textContent = 'Enter';
+                    userCourseDiv.appendChild(enterButton);
+                } else {
+                    userCourseDiv.innerHTML = '<p>No assigned course.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user course:', error);
+            });
+
+        // Fetch and set user info
+        fetch('/main/getSignedInUser')
+            .then(response => response.json())
+            .then(userData => {
+                document.getElementById('userName').textContent = userData.Name;
+                document.getElementById('userEmail').textContent = userData.Email;
+            })
+            .catch(error => console.error('Error fetching user info:', error));
     };
 </script>
 </body>
