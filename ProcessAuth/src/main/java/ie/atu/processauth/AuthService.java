@@ -14,6 +14,7 @@ public class AuthService {
     private String SignedUsername;
     private String SignedName;
     private final MainClient mainClient;
+    private long SignedCourse;
 
     private String SignedEmail;
     public AuthService(PersonRepository personRepository, MainClient mainClient) {
@@ -63,6 +64,7 @@ public class AuthService {
             SignedUsername = userName;
             SignedName = person.getName();
             SignedEmail = person.getEmail();
+            SignedCourse = person.getCourseId();
 
             return "Login successful! Welcome, " + SignedUsername + "! Name: "+ SignedName + ", Email: " + SignedEmail;
         } else if (person.getUserType() == 2) {
@@ -84,7 +86,9 @@ public class AuthService {
     public String getSignedEmail(){
         return SignedEmail;
     }
-
+    public Long getCourseIdByUsername() {
+        return SignedCourse;
+    }
     public List<Map<String,String>> fetchCourses(){
         try {
             ResponseEntity<List<Map<String, String>>> response = mainClient.SignUpCourses();

@@ -148,6 +148,22 @@
         footer ul li a:hover {
             text-decoration: underline;
         }
+
+        /* Button Styles */
+        #view-all-courses {
+            background-color: #b92b27;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #view-all-courses:hover {
+            background-color: #9a1f1b;
+        }
     </style>
 </head>
 <body>
@@ -165,6 +181,8 @@
     <section class="feed">
         <h3>Courses</h3>
         <div id="course-feed"></div>
+        <!-- Button to view all courses -->
+        <button id="view-all-courses" style="display:none;">View All Courses</button>
     </section>
 </main>
 <footer>
@@ -181,49 +199,85 @@
         fetch('/main/getSignedInUser')
             .then(response => response.json())
             .then(userData => {
-                // Ensure the keys match those returned from the backend (case-sensitive)
-                const signedInName = userData.Name;  // Should match the key in your Map from AuthController
-                const signedEmail = userData.Email;  // Should match the key in your Map from AuthController
+                const signedInName = userData.Name;
+                const signedEmail = userData.Email;
 
                 // Update the profile section with the signed-in user's info
                 document.querySelector('#userName').textContent = signedInName;
                 document.querySelector('#userEmail').textContent = signedEmail;
+
+                // Show the user's assigned course after login
+                fetch('/main/userCourse')
+                    .then(response => response.json())
+                    .then(data => {
+                        const courseDetails = data.courseDetails;  // Access course details from the response
+                        const courseName = courseDetails.name; // Access course name
+                        const courseDescription = courseDetails.description; // Access course description
+
+                        // Now use these values to update the UI
+                        const courseFeed = document.getElementById('course-feed');
+                        courseFeed.innerHTML = '';  // Clear any previous content
+
+                        const feedItem = document.createElement('div');
+                        feedItem.classList.add('feed-item');
+
+                        const courseNameElement = document.createElement('h5');
+                        courseNameElement.textContent = courseName || 'No course name available';  // Display course name or fallback text
+                        feedItem.appendChild(courseNameElement);
+
+                        const courseDescriptionElement = document.createElement('span');
+                        courseDescriptionElement.textContent = courseDescription || 'No description available';  // Display description or fallback text
+                        feedItem.appendChild(courseDescriptionElement);
+
+                        const courseLink = document.createElement('a');
+                        courseLink.href = '#'; // You can link to the actual course details page
+                        courseLink.textContent = 'Enter';  // Button or link text
+                        feedItem.appendChild(courseLink);
+
+                        courseFeed.appendChild(feedItem);
+                    })
+                    .catch(error => {
+                        console.error("Error fetching course data:", error);
+                        document.getElementById('course-feed').innerHTML = '<p>Error loading course information.</p>';
+                    });
+
+                // Event listener for viewing all courses
+                document.getElementById('view-all-courses').addEventListener('click', function() {
+                    fetch('/main/getall')
+                        .then(response => response.json())
+                        .then(data => {
+                            const courseFeed = document.getElementById('course-feed');
+                            courseFeed.innerHTML = ''; // Clear the feed
+
+                            data.Courses.forEach(course => {
+                                const feedItem = document.createElement('div');
+                                feedItem.classList.add('feed-item');
+
+                                const courseName = document.createElement('h5');
+                                courseName.textContent = course.name;
+                                feedItem.appendChild(courseName);
+
+                                const courseDescription = document.createElement('span');
+                                courseDescription.textContent = course.description;
+                                feedItem.appendChild(courseDescription);
+
+                                const courseLink = document.createElement('a');
+                                courseLink.href = '#'; // Link to course details
+                                courseLink.textContent = 'Enter';
+                                feedItem.appendChild(courseLink);
+
+                                courseFeed.appendChild(feedItem);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching all course data:', error);
+                        });
+                });
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
             });
-
-        // Fetch courses data
-        fetch('/main/getall')
-            .then(response => response.json())
-            .then(data => {
-                const courseFeed = document.getElementById('course-feed');
-                data.Courses.forEach(course => {
-                    const feedItem = document.createElement('div');
-                    feedItem.classList.add('feed-item');
-
-                    const courseName = document.createElement('h5');
-                    courseName.textContent = course.name;
-                    feedItem.appendChild(courseName);
-
-                    const courseDescription = document.createElement('span');
-                    courseDescription.textContent = course.description;
-                    feedItem.appendChild(courseDescription);
-
-                    const courseLink = document.createElement('a');
-                    courseLink.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`; // Redirect to module service
-                    courseLink.textContent = 'Enter';
-                    feedItem.appendChild(courseLink);
-
-                    courseFeed.appendChild(feedItem);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching course data:', error);
-            });
-
     };
-
 </script>
 </body>
 </html>

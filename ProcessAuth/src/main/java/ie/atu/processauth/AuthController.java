@@ -44,7 +44,11 @@ public class AuthController {
         }
 
     }
-
+    @GetMapping("/userCourse")
+    public Long getCourseIdByUsername() {
+        // Searching for the person by their username
+        return authService.getCourseIdByUsername();
+    }
     @GetMapping("/signedUsername")
     public String getSignedUsername() {
         return authService.getSignedUsername();
