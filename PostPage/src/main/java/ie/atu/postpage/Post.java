@@ -1,7 +1,10 @@
 package ie.atu.postpage;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
+
 
 @Entity
 @Data
@@ -20,6 +23,15 @@ public class Post {
 
     @Column(length = 1000)
     private String content;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comments> comments;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Likes> likes;
+
 
     @Column(nullable = false)
     private Long userId;
@@ -56,6 +68,21 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
+    }
+    public List<Comments> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comments> comments) {
+        this.comments = comments;
+    }
+
+    public List<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Likes> likes) {
+        this.likes = likes;
     }
 
     public Long getModuleId() {

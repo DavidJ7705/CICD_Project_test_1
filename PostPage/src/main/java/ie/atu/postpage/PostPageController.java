@@ -57,4 +57,22 @@ public class PostPageController {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
+    // Add a comment
+    @PostMapping("/{postId}/comment")
+    public ResponseEntity<String> addCommentToPost(@PathVariable Long postId, @RequestBody Comments comment) {
+        postService.addCommentToPost(postId, comment);
+        return ResponseEntity.ok("Comment posted!!");
+    }
+
+    // Add a like
+
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<String> toggleLike(@PathVariable Long postId){
+        Likes like = postService.toggleLike(postId);
+        if (like == null) {
+            return ResponseEntity.ok("Like removed successfully.");
+        } else {
+            return ResponseEntity.ok("Post liked successfully.");
+        }
+    }
 }
