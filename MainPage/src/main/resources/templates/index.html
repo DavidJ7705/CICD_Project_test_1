@@ -102,10 +102,32 @@
         .content-center h3 {
             color: #b92b27;
             margin-bottom: 15px;
-            font-size: 24px;
+            font-size: 28px;
             text-align: center;
         }
 
+        .content-center h5 {
+            color: #000000;
+            margin-bottom: 15px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .content-center a {
+            color: #b92b27;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: 1px solid #b92b27;
+            border-radius: 5px;
+            background: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .content-center a:hover {
+            background: #b92b27;
+            color: #fff;
+        }
         .feed-item {
             margin-bottom: 20px;
             padding: 15px;
@@ -257,7 +279,7 @@
                 if (courseData && courseData.courseDetails) {
                     const courseDetails = courseData.courseDetails;
 
-                    const courseName = document.createElement('p');
+                    const courseName = document.createElement('h5');
                     courseName.textContent = courseDetails.name;
                     userCourseDiv.appendChild(courseName);
 
@@ -266,7 +288,7 @@
                     userCourseDiv.appendChild(courseDescription);
 
                     const enterButton = document.createElement('a');
-                    enterButton.href = `http://localhost:8081/module/view/bycourse/${courseDetails.courseId}`;
+                    enterButton.href = `http://localhost:8081/module/view/bycourse/${courseDetails.courseId}`; // Adjust this URL if necessary
                     enterButton.textContent = 'Enter';
                     userCourseDiv.appendChild(enterButton);
                 } else {

@@ -66,7 +66,7 @@ public class MainPageService {
         Map<String, String> courseDetails = new HashMap<>();
         courseDetails.put("name", course.getName()); // Assuming 'getName()' is the method for course name
         courseDetails.put("description", course.getDescription()); // Assuming 'getDescription()' is the method for course description
-
+        courseDetails.put("courseId", String.valueOf(courseId));
         // Add the course details to the response
         response.put("courseDetails", courseDetails);
 
