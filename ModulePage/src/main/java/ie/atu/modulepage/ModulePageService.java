@@ -64,7 +64,28 @@ public class ModulePageService {
 
         return response;
     }
+    public Map<String, String> getSignedInUserInfo() {
+        String signedUsername = authClient.getSignedUsername();  // Get signed-in user's name
+        String signedName = authClient.getSignedName();
+        String signedEmail = authClient.getSignedEmail();
+        // You might also want to call another endpoint or method to get the user's email if needed
 
+        Map<String, String> userInfo = new HashMap<>();
+        userInfo.put("userName", signedUsername);
+        userInfo.put("Name", signedName);
+        userInfo.put("Email", signedEmail);
+
+        return userInfo;
+    }
+    // Get all courses
+    public Map<String, Object> getAllCourses() {
+        String courses = mainClient.getAllCourses();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("Courses", courses);
+
+        return response;
+    }
     public Long getSelectedModule(){
         return selectedModuleId;
     }
