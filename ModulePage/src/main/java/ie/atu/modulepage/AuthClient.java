@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name="auth-service", url = "http://localhost:8083/auth")
 public interface AuthClient {
-    @GetMapping("/signedUser")
-    String getSignedUser();
+    @GetMapping("/signedUsername")
+    String getSignedUsername();
 }
 

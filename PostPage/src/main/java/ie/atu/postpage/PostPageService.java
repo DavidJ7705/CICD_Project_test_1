@@ -1,7 +1,9 @@
 package ie.atu.postpage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,21 +13,25 @@ import java.util.Map;
 public class PostPageService {
 
     private PostRepository postRepository;
+    private CommentsRepository commentsRepository;
+    private LikesRepository likesRepository;
 
     private AuthClient authClient;
     private MainClient mainClient;
 
     private ModuleClient moduleClient;
 
-    public PostPageService (PostRepository postRepository, AuthClient authClient, MainClient mainClient, ModuleClient moduleClient){
+    public PostPageService (PostRepository postRepository, CommentsRepository commentsRepository, LikesRepository likesRepository, AuthClient authClient, MainClient mainClient, ModuleClient moduleClient){
         this.postRepository = postRepository;
+        this.commentsRepository = commentsRepository;
+        this.likesRepository = likesRepository;
         this.authClient = authClient;
         this.mainClient = mainClient;
         this.moduleClient = moduleClient;
     }
 
     public Map<String, Object> getAllPosts(){
-        String signedUser = authClient.getSignedUser();
+        String signedUser = authClient.getSignedUsername();
         List <Post> posts = postRepository.findAll();
         Map<String, Object> response = new HashMap<>();
         response.put("Signed In User", signedUser);
@@ -35,7 +41,7 @@ public class PostPageService {
     }
 
     public Map<String, Object> getPostsBySelectedCourse(){
-        String signedUser = authClient.getSignedUser();
+        String signedUser = authClient.getSignedUsername();
         String selectedCourse = mainClient.getCourseName();
         String selectedModule = moduleClient.getModuleName();
         long selectedModuleId = moduleClient.getSelectedModule();
@@ -73,5 +79,34 @@ public class PostPageService {
     // Delete a post
     public void deletePost(Long id) {
         postRepository.deleteById(id);
+    }
+
+    // Add a comment to a post
+    public Comments addCommentToPost(Long postId, Comments comment) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
+
+        comment.setPost(post);
+        comment.setUsername(authClient.getSignedUsername());
+        return commentsRepository.save(comment);
+    }
+
+    @Transactional
+    public Likes toggleLike(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
+
+        String signedUser = authClient.getSignedUsername();
+        if (likesRepository.existsByPostIdAndUsername(postId, signedUser)) {
+            // If the like exists, remove it (dislike)
+            likesRepository.deleteByPostIdAndUsername(postId, signedUser);
+            return null; // Return null to indicate the like was removed
+        } else {
+            // If the like doesn't exist, add it
+            Likes like = new Likes();
+            like.setPost(post);
+            like.setUsername(signedUser);
+            return likesRepository.save(like);
+        }
     }
 }
