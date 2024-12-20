@@ -21,9 +21,17 @@ public class AuthService {
 
     public String signUp(String name, String userName, String email, String password, int courseId) {
         // Check if username already exists
-        Optional<Person> existingPerson = personRepository.findByUserName(userName);
-        if (existingPerson.isPresent()) {
+        Optional<Person> existingUsername = personRepository.findByUserName(userName);
+        if (existingUsername.isPresent()) {
             return "Username already exists!";
+        }
+        Optional<Person> existingEmail = personRepository.findByEmail(email);
+        if (existingEmail.isPresent()) {
+            return "Email already exists!";
+        }
+        Optional<Person> existingName = personRepository.findByName(name);
+        if (existingName.isPresent()) {
+            return "Name already exists!";
         }
 
         // Create and save a new user
