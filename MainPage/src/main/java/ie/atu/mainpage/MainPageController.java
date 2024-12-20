@@ -23,7 +23,11 @@ public class MainPageController {
         Map<String, Object> response = courseService.getAllCourses();
         return ResponseEntity.ok(response);
     }
-
+    @GetMapping("/userCourse")
+    public ResponseEntity<Map<String, Object>> getUserCourses() {
+        Map<String, Object> response = courseService.getUserCourses();
+        return ResponseEntity.ok(response);
+    }
     //This happens when you click a specific course on the webpage. It then will redirect you to the module page, where it will be a list of modules of that specific course the user clicked.
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {

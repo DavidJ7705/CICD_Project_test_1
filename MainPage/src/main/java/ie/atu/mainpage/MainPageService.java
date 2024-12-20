@@ -47,7 +47,31 @@ public class MainPageService {
         return course;
     }
 
+    public Map<String, Object> getUserCourses() {
+        // Get the username of the logged-in user
+        String signedUsername = authClient.getSignedUsername();
 
+        // Get the courseId associated with the signed-in username
+        Long courseId = authClient.getCourseIdByUsername(); // This gives us the courseId
+
+        // Now, use the courseId to find the course from the course table (main-db)
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found for id: " + courseId));
+
+        // Prepare the response
+        Map<String, Object> response = new HashMap<>();
+        response.put("userName", signedUsername);
+
+        // Extract course name and description and return them separately
+        Map<String, String> courseDetails = new HashMap<>();
+        courseDetails.put("name", course.getName()); // Assuming 'getName()' is the method for course name
+        courseDetails.put("description", course.getDescription()); // Assuming 'getDescription()' is the method for course description
+
+        // Add the course details to the response
+        response.put("courseDetails", courseDetails);
+
+        return response;
+    }
 
     public Map<String, String> getSignedInUserInfo() {
         String signedUsername = authClient.getSignedUsername();  // Get signed-in user's name
@@ -62,9 +86,6 @@ public class MainPageService {
 
         return userInfo;
     }
-
-
-
 
     // Add a new course
     public Course addCourse(Course course) {
