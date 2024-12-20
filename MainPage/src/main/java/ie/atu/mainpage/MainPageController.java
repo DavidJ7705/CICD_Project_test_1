@@ -7,6 +7,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/main")
+@CrossOrigin(origins = "http://localhost:8080") // Enable CORS for this controller
 public class MainPageController {
 
     private final MainPageService courseService;

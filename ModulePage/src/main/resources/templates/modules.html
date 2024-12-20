@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modules for Course</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .module-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+<h1>Modules for Selected Course</h1>
+<ul>
+  <li th:each="module : ${modules}">
+    <div class="module-item">
+      <h3 th:text="${module.name}">Module Name</h3>
+      <p th:text="${module.description}">Module Description</p>
+    </div>
+  </li>
+</ul>
+<div th:if="${#lists.isEmpty(modules)}">
+  <p>No modules available for this course.</p>
+</div>
+</body>
+</html>

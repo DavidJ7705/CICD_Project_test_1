@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/module")
+@CrossOrigin(origins = "http://localhost:8083") // Enable CORS for this controller
+
 public class ModulePageController {
 
     private final ModulePageService moduleService;

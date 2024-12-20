@@ -211,7 +211,7 @@
                     feedItem.appendChild(courseDescription);
 
                     const courseLink = document.createElement('a');
-                    courseLink.href = '#';
+                    courseLink.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`; // Redirect to module service
                     courseLink.textContent = 'Enter';
                     feedItem.appendChild(courseLink);
 
@@ -221,6 +221,7 @@
             .catch(error => {
                 console.error('Error fetching course data:', error);
             });
+
     };
 
 </script>
