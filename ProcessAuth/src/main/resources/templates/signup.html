@@ -170,23 +170,34 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("http://localhost:8080/main/SignUpCourses")
-            .then(response => response.json()) // Directly parse JSON
+        fetch("http://localhost:8083/auth/fetchcourses") // Updated endpoint
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to fetch courses.");
+                return response.json();
+            })
             .then(data => {
-                console.log("Courses fetched successfully:", data); // Debug log
                 const courseDropdown = document.getElementById("course");
-                data.forEach(course => {
-                    const option = document.createElement("option");
-                    option.value = course.id;
-                    option.textContent = course.name;
-                    courseDropdown.appendChild(option);
-                });
+                if (data.length === 0) {
+                    courseDropdown.innerHTML = '<option value="">No courses available</option>';
+                } else {
+                    courseDropdown.innerHTML = '<option value="" disabled selected>Select your course</option>';
+                    data.forEach(course => {
+                        const option = document.createElement("option");
+                        option.value = course.id; // Ensure `id` matches the key in your response
+                        option.textContent = course.name; // Ensure `name` matches the key in your response
+                        courseDropdown.appendChild(option);
+                    });
+                }
             })
             .catch(error => {
-                console.error("Error fetching courses:", error); // Log errors
+                console.error("Error fetching courses:", error);
                 alert("Failed to load courses. Please try again later.");
             });
     });
+
+
+
+
     document.getElementById('signupForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -195,10 +206,10 @@
             userName: document.getElementById('userName').value,
             password: document.getElementById('password').value,
             name: document.getElementById('name').value,
-            course: document.getElementById('course').value
+            courseId: parseInt(document.getElementById('course').value)
         };
 
-        fetch('/auth/signup', {
+        fetch('http://localhost:8083/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

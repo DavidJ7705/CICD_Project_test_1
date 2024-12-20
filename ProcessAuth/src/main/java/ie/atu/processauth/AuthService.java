@@ -1,10 +1,11 @@
 package ie.atu.processauth;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -12,9 +13,12 @@ public class AuthService {
     private final PersonRepository personRepository;
     private String SignedUsername;
     private String SignedName;
+    private final MainClient mainClient;
+
     private String SignedEmail;
-    public AuthService(PersonRepository personRepository) {
+    public AuthService(PersonRepository personRepository, MainClient mainClient) {
         this.personRepository = personRepository;
+        this.mainClient = mainClient;
     }
 
     private List<Person> personList = new ArrayList<>();
@@ -80,4 +84,16 @@ public class AuthService {
     public String getSignedEmail(){
         return SignedEmail;
     }
+
+    public List<Map<String,String>> fetchCourses(){
+        try {
+            ResponseEntity<List<Map<String, String>>> response = mainClient.SignUpCourses();
+            System.out.println("Courses fetched from MainClient: " + response.getBody());
+            return response.getBody();
+        } catch (Exception e) {
+            System.err.println("Error fetching courses: " + e.getMessage());
+            return List.of();
+        }
+    }
+
 }

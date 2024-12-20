@@ -12,4 +12,7 @@ public interface MainClient {
 
     @GetMapping("/SignUpCourses")
     ResponseEntity<List<Map<String, String>>> SignUpCourses();
+
+
+
 }
