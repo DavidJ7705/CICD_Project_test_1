@@ -10,4 +10,7 @@ public class MainPageWebController {
         // Returns the HTML view (index.html) from templates
         return "index";
     }
+
+
+
 }
