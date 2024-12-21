@@ -5,12 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ProfileWebController {
-    @GetMapping("/profile/profile")
-    public String showCoursesPage() {
-        // Returns the HTML view (index.html) from templates
-        return "profile";
+    @GetMapping("/view-profile") // Changed the mapping URL
+    public String showProfilePage() {
+        return "profile"; // This still resolves to "profile.html" in the templates folder
     }
-
-
-
 }
