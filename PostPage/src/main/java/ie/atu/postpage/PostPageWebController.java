@@ -16,7 +16,7 @@ public class PostPageWebController {
 
     @GetMapping("/post/view/module/{moduleId}")
     public String ShowPostsForModules(@PathVariable Long moduleId, Model model) {
-        model.addAttribute("posts", postPageService.getPostsByModuleId(moduleId));
+        model.addAttribute(" posts", postPageService.getPostsByModuleId(moduleId));
         return "posts"; // Return the "posts" view name
     }
 

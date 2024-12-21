@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -131,5 +128,24 @@ public class PostPageService {
         List <Post> userPostById = postRepository.findByIdIn(postIds);
         return userPostById;
     }
+
+    public List<Map<String, Object>> getPostsAUserLiked(Long moduleId, String currentUsername) {
+        List<Post> posts = postRepository.findByModuleId(moduleId);
+        List<Map<String, Object>> response = new ArrayList<>();
+
+        for (Post post : posts) {
+            Map<String, Object> postMap = new HashMap<>();
+            postMap.put("id", post.getId());
+            postMap.put("title", post.getTitle());
+            postMap.put("content", post.getContent());
+            postMap.put("likes", post.getLikes().size());
+            postMap.put("userLiked", post.getLikes().stream().anyMatch(like -> like.getUsername().equals(currentUsername)));
+
+            response.add(postMap);
+        }
+
+        return response;
+    }
+
 
 }

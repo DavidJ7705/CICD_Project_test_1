@@ -1,6 +1,5 @@
 package ie.atu.postpage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +10,12 @@ import java.util.Map;
 @RequestMapping("/post")
 public class PostPageController {
 
+    private final AuthClient authClient;
+
     private PostPageService postService;
-    public PostPageController (PostPageService postService)
+    public PostPageController (AuthClient authClient, PostPageService postService)
     {
+        this.authClient = authClient;
         this.postService = postService;
     }
 
@@ -85,5 +87,10 @@ public class PostPageController {
     public ResponseEntity<List<Post>> getPostsById() {
         return ResponseEntity.ok(postService.getPostsById());
     }
-
+    @GetMapping("/module/{moduleId}/detailed")
+    public ResponseEntity<List<Map<String, Object>>> getPostsAUserLiked(@PathVariable Long moduleId) {
+        String currentUsername = authClient.getSignedUsername();
+        List<Map<String, Object>> posts = postService.getPostsAUserLiked(moduleId, currentUsername);
+        return ResponseEntity.ok(posts);
+    }
 }
