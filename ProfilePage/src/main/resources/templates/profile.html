@@ -126,6 +126,75 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     }
 
+    /* Popup styles */
+    .edit-profile-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      z-index: 1000;
+      width: 400px;
+    }
+
+    .popup-header {
+      background: #b92b27;
+      padding: 15px;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .popup-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .popup-body input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .popup-footer {
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .popup-footer button {
+      background: #b92b27;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .popup-footer button:hover {
+      background: #a02422;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
@@ -157,6 +226,21 @@
   <button class="back-button" id="backButton">Back to Homepage</button>
 </div>
 
+<div class="overlay" id="overlay"></div>
+
+<div class="edit-profile-popup" id="editProfilePopup">
+  <div class="popup-header">Edit Profile</div>
+  <div class="popup-body">
+    <input type="text" id="editName" placeholder="Name">
+    <input type="email" id="editEmail" placeholder="Email">
+    <input type="number" id="editCourse" placeholder="Course ID">
+  </div>
+  <div class="popup-footer">
+    <button id="saveChanges">Save</button>
+    <button id="cancelEdit">Cancel</button>
+  </div>
+</div>
+
 <script>
   // Fetch profile details from the backend
   fetch('/profile/info')
@@ -166,89 +250,99 @@
             document.getElementById('name').textContent = userData.Name;
             document.getElementById('email').textContent = userData.Email;
             document.getElementById('course').textContent = userData.Course;
+            document.getElementById('editName').value = userData.Name;
+            document.getElementById('editEmail').value = userData.Email;
+            document.getElementById('editCourse').value = userData.Course;
           })
-          .catch(error => {
-            console.error('Error fetching user data:', error);
-          });
+          .catch(error => console.error('Error fetching user data:', error));
 
   // Fetch user posts
-  fetch('/profile/post') // Update to your Talend endpoint
+  fetch('/profile/post')
           .then(response => response.json())
           .then(posts => {
             const postList = document.getElementById('postList');
-
             if (Object.keys(posts).length === 0) {
               postList.innerHTML = '<p>No posts to display.</p>';
             } else {
               for (const [key, value] of Object.entries(posts)) {
                 const postElement = document.createElement('div');
-                postElement.classList.add('post'); // Use your post-specific styling class
-                postElement.innerHTML = `
-          <div class="post-title">${key}</div>
-          <div class="post-content">${value}</div>
-        `;
+                postElement.classList.add('post');
+                postElement.innerHTML = `<div class="post-title">${key}</div><div class="post-content">${value}</div>`;
                 postList.appendChild(postElement);
               }
             }
-          })
-          .catch(error => {
-            console.error('Error fetching posts:', error);
-            document.getElementById('postList').innerHTML = '<p>Error loading posts.</p>';
           });
 
-
   // Fetch user likes
-  fetch('/profile/like') // Adjust the endpoint as necessary
+  fetch('/profile/like')
           .then(response => response.json())
           .then(likes => {
-            const likeList = document.getElementById('likeList'); // Assuming this is the correct ID
-
-            // Clear the current content
+            const likeList = document.getElementById('likeList');
             likeList.innerHTML = '';
-
             if (Object.keys(likes).length === 0) {
               likeList.innerHTML = '<p>No likes to display.</p>';
             } else {
               for (const [key, value] of Object.entries(likes)) {
                 const likeElement = document.createElement('div');
-                likeElement.classList.add('like'); // Use your like-specific styling class
-                likeElement.innerHTML = `
-          <div class="like-title">${key}</div>
-          <div class="like-content">${value}</div>
-        `;
+                likeElement.classList.add('like');
+                likeElement.innerHTML = `<div class="like-title">${key}</div><div class="like-content">${value}</div>`;
                 likeList.appendChild(likeElement);
               }
             }
-          })
-          .catch(error => {
-            console.error('Error fetching likes:', error);
-            document.getElementById('likeList').innerHTML = '<p>Error loading likes.</p>';
           });
 
   // Fetch user comments
   fetch('/main/getUserComments')
           .then(response => response.json())
           .then(comments => {
-            const commentsList = document.getElementById('commentsList');
-
+            const commentList = document.getElementById('commentList');
             if (comments.length === 0) {
-              commentsList.innerHTML = '<p>No comments to display.</p>';
+              commentList.innerHTML = '<p>No comments to display.</p>';
             } else {
               comments.forEach(comment => {
                 const commentElement = document.createElement('div');
-                commentElement.classList.add('item');
-                commentElement.textContent = comment.content; // Replace with actual property
-                commentsList.appendChild(commentElement);
+                commentElement.classList.add('comment');
+                commentElement.textContent = comment.content;
+                commentList.appendChild(commentElement);
               });
             }
-          })
-          .catch(error => {
-            console.error('Error fetching comments:', error);
           });
 
   // Back button functionality
   document.getElementById('backButton').addEventListener('click', () => {
-    window.location.href = 'http://localhost:8080/main/viewall'; // Replace with the actual homepage URL
+    window.location.href = 'http://localhost:8080/main/viewall';
+  });
+
+  // Edit Profile functionality
+  document.getElementById('editProfileButton').addEventListener('click', () => {
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('editProfilePopup').style.display = 'block';
+  });
+
+  document.getElementById('cancelEdit').addEventListener('click', () => {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('editProfilePopup').style.display = 'none';
+  });
+
+  document.getElementById('saveChanges').addEventListener('click', () => {
+    const name = document.getElementById('editName').value;
+    const email = document.getElementById('editEmail').value;
+    const courseId = document.getElementById('editCourse').value;
+
+    fetch('/profile/update', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, courseId }),
+    })
+            .then(() => {
+              document.getElementById('name').textContent = name;
+              document.getElementById('email').textContent = email;
+              document.getElementById('course').textContent = courseId;
+              document.getElementById('overlay').style.display = 'none';
+              document.getElementById('editProfilePopup').style.display = 'none';
+              alert('Profile updated successfully!');
+            })
+            .catch(error => console.error('Error updating profile:', error));
   });
 </script>
 </body>
