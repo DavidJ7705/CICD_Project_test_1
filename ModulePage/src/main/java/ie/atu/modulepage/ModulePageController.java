@@ -34,7 +34,7 @@ public class ModulePageController {
     }
 
     // Get a specific module
-    @GetMapping("/{id}")
+    @GetMapping("/bymodule/{id}")
     public ResponseEntity<Module> getModuleById(@PathVariable Long id) {
         return ResponseEntity.ok(moduleService.getModuleById(id));
     }

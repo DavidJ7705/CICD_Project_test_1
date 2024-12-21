@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts for Module</title>
+    <style>
+        /* Same CSS as before */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background-color: #b92b27;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .search-bar {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        header .search-bar input {
+            width: 60%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header .profile-section div {
+            color: white;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        header .profile-section div h4 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        main {
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - 60px);
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .sidebar-left, .sidebar-right {
+            width: 20%;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar-left h3, .sidebar-right h3 {
+            color: #b92b27;
+            margin-bottom: 10px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .content-center {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .content-center h3 {
+            color: #b92b27;
+            margin-bottom: 15px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .post-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-item h3 {
+            font-size: 18px;
+            color: #b92b27;
+            margin-bottom: 5px;
+        }
+
+        .post-item p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        footer {
+            background: #f8f8f8;
+            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        footer ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        footer ul li a {
+            text-decoration: none;
+            color: #b92b27;
+            font-size: 14px;
+        }
+
+        footer ul li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">Spreadit</div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search posts...">
+    </div>
+    <div class="profile-section">
+        <div>
+            <h4 id="userName">User's Name</h4>
+            <p id="userEmail">User's Email</p>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Left Sidebar -->
+    <div class="sidebar-left">
+        <h3>Navigation</h3>
+        <p><a href="modules.html">Back to Modules</a></p>
+    </div>
+
+    <!-- Center Content -->
+    <div class="content-center">
+        <h3>Posts for Selected Module</h3>
+        <div id="posts-container">
+            <!-- Posts will be dynamically loaded here -->
+            <p>Loading posts...</p>
+        </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar-right">
+        <h3>Other Features</h3>
+        <p>Additional content can go here.</p>
+    </div>
+</main>
+
+<footer>
+    <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms</a></li>
+    </ul>
+</footer>
+
+<script>
+    window.onload = function () {
+        // Get the moduleId from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const moduleId = urlParams.get('moduleId');
+
+        // Fetch posts by module ID
+        const postsContainer = document.getElementById('posts-container');
+        if (moduleId) {
+            fetch(`/post/module/${moduleId}`)
+                .then(response => response.json())
+                .then(posts => {
+                    postsContainer.innerHTML = '';
+                    if (posts.length > 0) {
+                        posts.forEach(post => {
+                            const postItem = document.createElement('div');
+                            postItem.classList.add('post-item');
+
+                            const postTitle = document.createElement('h3');
+                            postTitle.textContent = post.title;
+                            postItem.appendChild(postTitle);
+
+                            const postContent = document.createElement('p');
+                            postContent.textContent = post.content;
+                            postItem.appendChild(postContent);
+
+                            postsContainer.appendChild(postItem);
+                        });
+                    } else {
+                        postsContainer.innerHTML = '<p>No posts available for this module.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching posts:', error);
+                    postsContainer.innerHTML = '<p>Error loading posts. Please try again later.</p>';
+                });
+        } else {
+            postsContainer.innerHTML = '<p>Module ID not found in URL.</p>';
+        }
+
+        // Load user info
+        fetch('/post/getAll')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('userName').textContent = data["Signed In User"];
+                document.getElementById('userEmail').textContent = 'Welcome back!';
+            })
+            .catch(error => console.error('Error fetching user info:', error));
+    };
+</script>
+</body>
+</html>
