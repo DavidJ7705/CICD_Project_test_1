@@ -23,13 +23,21 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Person person) {
         String response = authService.signUp(person.getName(), person.getUserName(), person.getEmail(), person.getPassword(), person.getCourseId());
-            return ResponseEntity.ok(response);
+        if (response.startsWith("User signed up successfully!")) {
+            return ResponseEntity.ok("success");  // Just return success
+        } else {
+            return ResponseEntity.ok(response); // Return failure message
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Person person) {
         String response = authService.login(person.getUserName(), person.getPassword());
-        return ResponseEntity.ok(response);
+        if (response.startsWith("User signed up successfully!")) {
+            return ResponseEntity.ok("success");  // Just return success
+        } else {
+            return ResponseEntity.ok(response); // Return failure message
+        }
     }
 
 
