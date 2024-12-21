@@ -41,7 +41,15 @@ public class AuthService {
 
         // Create and save a new user
         Person newPerson = new Person(name, userName, email, password, courseId);
+
         personRepository.save(newPerson);
+
+        SignedUsername = userName;
+        SignedName = name;
+        SignedEmail = email;
+        SignedCourse = courseId;
+
+
         return "User signed up successfully!";
     }
 
