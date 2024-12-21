@@ -33,10 +33,13 @@ public class PostPageService {
     }
 
     public Map<String, Object> getAllPosts(){
-        String signedUser = authClient.getSignedUsername();
+        String signedUser = authClient.getSignedName();
+        String signedEmail = authClient.getSignedEmail();
+
         List <Post> posts = postRepository.findAll();
         Map<String, Object> response = new HashMap<>();
         response.put("Signed In User", signedUser);
+        response.put("Signed In Email", signedEmail);
         response.put("Posts", posts);
 
         return response;

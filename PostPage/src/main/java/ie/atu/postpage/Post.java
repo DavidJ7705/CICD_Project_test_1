@@ -15,8 +15,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long moduleId; // Links to Module ID
+    @Column(name = "module_id")
+    private Long moduleId;
 
     @Column(nullable = false)
     private String title;
