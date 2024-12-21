@@ -54,4 +54,16 @@ public class ProfilePageService {
 
         return userPost;
     }
+
+    public String updateProfile(Map<String, Object> updatedDetails) {
+        String username = (String) updatedDetails.get("username");
+        String name = (String) updatedDetails.get("name");
+        String email = (String) updatedDetails.get("email");
+        int courseId = (int) updatedDetails.get("courseId");
+
+        return authClient.updateUserDetails(username, name, email, courseId);
+    }
+
+
+
 }

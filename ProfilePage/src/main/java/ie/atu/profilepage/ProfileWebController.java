@@ -9,4 +9,6 @@ public class ProfileWebController {
     public String showProfilePage() {
         return "profile"; // This still resolves to "profile.html" in the templates folder
     }
+
+
 }

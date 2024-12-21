@@ -44,6 +44,25 @@ public class AuthController {
 
 
     }
+
+
+
+    //update based on user id
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody Person updatedPerson) {
+        String response = authService.updateUser(userId, updatedPerson);
+        return ResponseEntity.ok(response);
+    }
+
+
+    //update for the front end
+    @PutMapping("/update/{username}")
+    public ResponseEntity<String> updateUser(@PathVariable String username, @RequestParam String name,@RequestParam String email,@RequestParam int courseId ){
+        String response = authService.updateUserDetails(username, name, email, courseId);
+        return ResponseEntity.ok(response);
+    }
+
+
     @GetMapping("/userCourse")
     public Long getCourseIdByUsername() {
         // Searching for the person by their username
