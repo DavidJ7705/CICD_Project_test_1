@@ -1,9 +1,6 @@
 package ie.atu.profilepage;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 @RequestMapping("/profile")
@@ -28,5 +25,10 @@ public class ProfilePageController {
     @GetMapping("/like")
     public Map<String, String> getUserPostByLike(){
         return profilePageService.getUserPostByLike();
+    }
+
+    @PutMapping("/update")
+    public String updateProfile(@RequestBody Map<String, Object> updatedDetails) {
+        return profilePageService.updateProfile(updatedDetails);
     }
 }

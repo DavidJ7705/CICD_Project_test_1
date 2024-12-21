@@ -83,6 +83,51 @@ public class AuthService {
 
     }
 
+
+
+    public String updateUser(Long userId, Person updatedPerson) {
+        Optional<Person> existingPersonOpt = personRepository.findById(userId);
+        if (existingPersonOpt.isEmpty()) {
+            return "User not found!";
+        }
+
+        Person existingPerson = existingPersonOpt.get();
+
+        // Update fields only if they are provided in the request
+        if (updatedPerson.getName() != null) {
+            existingPerson.setName(updatedPerson.getName());
+        }
+        if (updatedPerson.getUserName() != null) {
+            existingPerson.setUserName(updatedPerson.getUserName());
+        }
+        if (updatedPerson.getEmail() != null) {
+            existingPerson.setEmail(updatedPerson.getEmail());
+        }
+        if (updatedPerson.getPassword() != null) {
+            existingPerson.setPassword(updatedPerson.getPassword());
+        }
+        if (updatedPerson.getCourseId() != 0) { // Assuming courseId cannot be null
+            existingPerson.setCourseId(updatedPerson.getCourseId());
+        }
+
+        personRepository.save(existingPerson);
+
+        return "User updated successfully!";
+    }
+
+    public String updateUserDetails(String username, String name, String email, int courseId) {
+        Person person = personRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (name != null) person.setName(name);
+        if (email != null) person.setEmail(email);
+        if (courseId != 0) person.setCourseId(courseId);
+
+        personRepository.save(person);
+        return "User updated successfully!";
+    }
+
+
     public String getSignedUsername() {
         return SignedUsername;
     }
@@ -97,6 +142,9 @@ public class AuthService {
     public Long getCourseIdByUsername() {
         return SignedCourse;
     }
+
+
+
     public List<Map<String,String>> fetchCourses(){
         try {
             ResponseEntity<List<Map<String, String>>> response = mainClient.SignUpCourses();

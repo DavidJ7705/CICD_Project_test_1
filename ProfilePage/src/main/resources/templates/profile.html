@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile Page</title>
   <style>
-    <style>
-      /* General body style */
+    /* General body style */
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
@@ -44,14 +43,31 @@
       font-weight: bold;
     }
 
+    .edit-profile-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      color: white;
+      background-color: #b92b27;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .edit-profile-button:hover {
+      background-color: #a02422;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+
     /* Post-section layout */
     .post-section {
       flex: 1;
       display: flex;
       overflow-y: auto;
       padding: 20px;
-      margin-top: 200px; /* Adjusted to push content down */
-      margin-bottom: 70px; /* Leave space for the fixed button */
+      margin-top: 200px; /* Adjusted to account for header height */
+      margin-bottom: 70px; /* Leaves space for the fixed button */
       gap: 15px;
     }
 
@@ -80,21 +96,6 @@
       border-radius: 5px;
       padding: 10px;
       margin-bottom: 10px;
-    }
-
-    .post-title,
-    .like-title,
-    .comment-title {
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #333;
-    }
-
-    .post-content,
-    .like-content,
-    .comment-content {
-      font-size: 14px;
-      color: #666;
     }
 
     /* Back button container */
@@ -134,7 +135,9 @@
   <div class="profile-item"><span>Name:</span> <span id="name"></span></div>
   <div class="profile-item"><span>Email:</span> <span id="email"></span></div>
   <div class="profile-item"><span>Course:</span> <span id="course"></span></div>
+  <button class="edit-profile-button" id="editProfileButton">Edit Profile</button>
 </div>
+
 <div class="post-section">
   <div class="column">
     <h3>Your Posts</h3>
@@ -149,9 +152,11 @@
     <div id="commentList"></div>
   </div>
 </div>
+
 <div class="back-button-container">
   <button class="back-button" id="backButton">Back to Homepage</button>
 </div>
+
 <script>
   // Fetch profile details from the backend
   fetch('/profile/info')
