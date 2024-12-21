@@ -154,6 +154,24 @@
     ul {
       list-style: none;
     }
+    .module-enter-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      border: 1px solid #b92b27;
+      border-radius: 5px;
+      background-color: #fff;
+      color: #b92b27;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .module-enter-button:hover {
+      background-color: #b92b27;
+      color: #fff;
+    }
 
     /* Ensure all-courses section is styled like index.html */
     .feed-item {
@@ -254,6 +272,7 @@
         <div class="module-item">
           <h3 th:text="${module.name}">Module Name</h3>
           <p th:text="${module.description}">Module Description</p>
+          <a th:href="'http://localhost:8082/post/view/module/' + ${module.id}" class="module-enter-button">Enter</a>
         </div>
       </li>
     </ul>
@@ -281,30 +300,6 @@
   window.onload = function () {
     const allCoursesDiv = document.getElementById('all-courses');
 
-    // Fetch all courses
-    fetch('/module/getallcourses')
-            .then(response => response.json())
-            .then(data => {
-              allCoursesDiv.innerHTML = '';
-              data.Courses.forEach(course => {
-                const courseItem = document.createElement('div');
-                courseItem.classList.add('feed-item');
-
-                const courseName = document.createElement('p');
-                courseName.textContent = course.name;
-                courseItem.appendChild(courseName);
-
-                const enterButton = document.createElement('a');
-                enterButton.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`;
-                enterButton.textContent = 'Enter';
-                courseItem.appendChild(enterButton);
-
-                allCoursesDiv.appendChild(courseItem);
-              });
-            })
-            .catch(error => {
-              console.error('Error fetching courses:', error);
-            });
 
       fetch('/module/getSignedInUser')
             .then(response => response.json())

@@ -7,4 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface AuthClient {
     @GetMapping("/signedUsername")
     String getSignedUsername();
+    @GetMapping("/signedName")
+    String getSignedName();
+    @GetMapping("/signedEmail")
+    String getSignedEmail();
 }
