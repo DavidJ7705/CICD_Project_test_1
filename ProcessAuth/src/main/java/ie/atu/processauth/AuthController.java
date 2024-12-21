@@ -23,20 +23,30 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Person person) {
         String response = authService.signUp(person.getName(), person.getUserName(), person.getEmail(), person.getPassword(), person.getCourseId());
-            return ResponseEntity.ok(response);
+        if (response.startsWith("User signed up successfully!")) {
+            return ResponseEntity.ok("success");  // Just return success
+        } else {
+            return ResponseEntity.ok(response); // Return failure message
+        }
     }
 
+
+    // Login endpoint with redirect
+    // Login endpoint with simplified response
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Person person) {
         String response = authService.login(person.getUserName(), person.getPassword());
-        return ResponseEntity.ok(response);
+        // Check if login was successful
+        if (response.startsWith("Login successful")) {
+            return ResponseEntity.ok("success");  // Just return success
+        } else {
+            return ResponseEntity.ok(response); // Return failure message
+        }
+
     }
-
-
-    //Below are the endpoints for different usages from different microservices
-    //Once signed in, it will retrieve all the user information
     @GetMapping("/userCourse")
     public Long getCourseIdByUsername() {
+        // Searching for the person by their username
         return authService.getCourseIdByUsername();
     }
     @GetMapping("/signedUsername")
@@ -55,7 +65,6 @@ public class AuthController {
     }
 
 
-    //Fetch all course name for sign up page
     @GetMapping("/fetchcourses")
     public ResponseEntity<List<Map<String, String>>> fetchAllCourses() {
         List<Map<String, String>> courses = authService.fetchCourses();
