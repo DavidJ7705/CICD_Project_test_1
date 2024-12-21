@@ -141,7 +141,7 @@
     <div id="postList"></div>
   </div>
   <div class="column">
-    <h3>Your Likes</h3>
+    <h3>Posts You've Liked</h3>
     <div id="likeList"></div>
   </div>
   <div class="column">
@@ -193,24 +193,31 @@
 
 
   // Fetch user likes
-  fetch('/main/getUserLikes')
+  fetch('/profile/like') // Adjust the endpoint as necessary
           .then(response => response.json())
           .then(likes => {
-            const likesList = document.getElementById('likesList');
+            const likeList = document.getElementById('likeList'); // Assuming this is the correct ID
 
-            if (likes.length === 0) {
-              likesList.innerHTML = '<p>No likes to display.</p>';
+            // Clear the current content
+            likeList.innerHTML = '';
+
+            if (Object.keys(likes).length === 0) {
+              likeList.innerHTML = '<p>No likes to display.</p>';
             } else {
-              likes.forEach(like => {
+              for (const [key, value] of Object.entries(likes)) {
                 const likeElement = document.createElement('div');
-                likeElement.classList.add('item');
-                likeElement.textContent = like.content; // Replace with actual property
-                likesList.appendChild(likeElement);
-              });
+                likeElement.classList.add('like'); // Use your like-specific styling class
+                likeElement.innerHTML = `
+          <div class="like-title">${key}</div>
+          <div class="like-content">${value}</div>
+        `;
+                likeList.appendChild(likeElement);
+              }
             }
           })
           .catch(error => {
             console.error('Error fetching likes:', error);
+            document.getElementById('likeList').innerHTML = '<p>Error loading likes.</p>';
           });
 
   // Fetch user comments

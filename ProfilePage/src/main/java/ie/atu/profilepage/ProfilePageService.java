@@ -43,4 +43,15 @@ public class ProfilePageService {
 
         return userPost;
     }
+
+    public Map<String, String> getUserPostByLike() {
+        List<Post> posts = postClient.getPostsById();
+        Map<String, String> userPost = new HashMap<>();
+
+        for (Post post : posts) {
+            userPost.put(post.getTitle(), post.getContent());
+        }
+
+        return userPost;
+    }
 }

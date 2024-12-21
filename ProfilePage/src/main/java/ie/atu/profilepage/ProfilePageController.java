@@ -25,4 +25,8 @@ public class ProfilePageController {
     public Map<String, String> getUserPost(){
         return profilePageService.getUserPost();
     }
+    @GetMapping("/like")
+    public Map<String, String> getUserPostByLike(){
+        return profilePageService.getUserPostByLike();
+    }
 }

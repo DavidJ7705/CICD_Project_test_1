@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PostPageService {
@@ -116,6 +118,15 @@ public class PostPageService {
         List <Post> userPosts = postRepository.findByUsername(username);
         return userPosts;
     }
+    public List<Post> getPostsById(){
+        String username = authClient.getSignedUsername();
+        List<Likes> likes = likesRepository.findByUsername(username);
 
+        List<Long> postIds = likes.stream()
+                .map(like -> like.getPost().getId()) // Access the Post entity's ID
+                .collect(Collectors.toList());
+        List <Post> userPostById = postRepository.findByIdIn(postIds);
+        return userPostById;
+    }
 
 }
