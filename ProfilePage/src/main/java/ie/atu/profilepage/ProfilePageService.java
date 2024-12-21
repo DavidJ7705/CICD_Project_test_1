@@ -1,17 +1,22 @@
 package ie.atu.profilepage;
 
+import ie.atu.profilepage.dto.Post;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @Service
 public class ProfilePageService {
     private AuthClient authClient;
     private MainClient mainClient;
 
-    public ProfilePageService(AuthClient authClient, MainClient mainClient) {
+    private PostClient postClient;
+
+    public ProfilePageService(AuthClient authClient, MainClient mainClient, PostClient postClient) {
         this.authClient = authClient;
         this.mainClient = mainClient;
+        this.postClient = postClient;
     }
     public Map<String, String> getProfileInfo() {
         String signedUsername = authClient.getSignedUsername();  // Get signed-in user's name
@@ -26,5 +31,16 @@ public class ProfilePageService {
         userInfo.put("Email", signedEmail);
         userInfo.put("Course", signedCourse);
         return userInfo;
+    }
+
+    public Map<String, String> getUserPost() {
+        List<Post> posts = postClient.getPostsByUsername();
+        Map<String, String> userPost = new HashMap<>();
+
+        for (Post post : posts) {
+            userPost.put(post.getTitle(), post.getContent());
+        }
+
+        return userPost;
     }
 }

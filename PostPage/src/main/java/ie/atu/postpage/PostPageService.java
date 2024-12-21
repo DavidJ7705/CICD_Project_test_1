@@ -64,6 +64,7 @@ public class PostPageService {
 
     // Add a new post
     public Post addPost(Post post) {
+
         return postRepository.save(post);
     }
 
@@ -109,4 +110,12 @@ public class PostPageService {
             return likesRepository.save(like);
         }
     }
+
+    public List<Post> getPostsByUsername() {
+        String username = authClient.getSignedUsername();
+        List <Post> userPosts = postRepository.findByUsername(username);
+        return userPosts;
+    }
+
+
 }

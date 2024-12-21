@@ -8,4 +8,7 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByModuleId(Long moduleId);
+    List<Post> findByUserId(Long userId);
+
+    List<Post> findByUsername(String username);
 }

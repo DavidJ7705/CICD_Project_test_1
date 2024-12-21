@@ -20,4 +20,9 @@ public class ProfilePageController {
     public Map<String, String> getProfileInfo(){
         return profilePageService.getProfileInfo();
     }
+
+    @GetMapping("/post")
+    public Map<String, String> getUserPost(){
+        return profilePageService.getUserPost();
+    }
 }

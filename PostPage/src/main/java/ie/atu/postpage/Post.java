@@ -24,6 +24,9 @@ public class Post {
     @Column(length = 1000)
     private String content;
 
+    @Column(nullable = false)
+    private String username;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comments> comments;
@@ -38,12 +41,13 @@ public class Post {
 
     public Post(){}
 
-    public Post(Long id, String title, String content, Long moduleId, Long userId) {
+    public Post(Long id, String title, String content, Long moduleId, Long userId, String username) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.moduleId = moduleId;
         this.userId = userId;
+        this.username = username;
     }
 
     public Long getId() {
@@ -99,5 +103,13 @@ public class Post {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
