@@ -72,5 +72,10 @@ public class MainPageController {
         List<Map<String, String>> response = courseService.SignUpCourses(); // Assume it returns a List<Map>
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/getProfileCourse")
+    public String getProfileCourse(){
+        return courseService.getProfileCourse();
+    }
 }
 
