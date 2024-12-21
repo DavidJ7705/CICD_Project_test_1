@@ -34,8 +34,8 @@ public class AuthController {
     // Login endpoint with redirect
     // Login endpoint with simplified response
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        String response = authService.login(loginRequest.getUserName(), loginRequest.getPassword());
+    public ResponseEntity<String> login(@RequestBody Person person) {
+        String response = authService.login(person.getUserName(), person.getPassword());
         // Check if login was successful
         if (response.startsWith("Login successful")) {
             return ResponseEntity.ok("success");  // Just return success
