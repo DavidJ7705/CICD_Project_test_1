@@ -55,15 +55,20 @@
             gap: 10px;
         }
 
-        header .profile-section div {
-            color: white;
+        header .profile-section button {
+            padding: 10px 15px;
             font-size: 14px;
-            text-align: right;
+            color: white;
+            background-color: #a02422;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
         }
 
-        header .profile-section div h4 {
-            font-size: 16px;
-            margin-bottom: 2px;
+        header .profile-section button:hover {
+            background-color: #b92b27;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
 
         main {
@@ -74,7 +79,7 @@
             gap: 20px;
         }
 
-        .sidebar-left, .sidebar-right {
+        .sidebar-left {
             width: 20%;
             padding: 15px;
             background: #fff;
@@ -83,11 +88,44 @@
             overflow-y: auto;
         }
 
-        .sidebar-left h3, .sidebar-right h3 {
+        .sidebar-left h3 {
             color: #b92b27;
             margin-bottom: 10px;
             font-size: 20px;
             text-align: center;
+        }
+
+        .sidebar-left .feed-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-left .feed-item p {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .sidebar-left .feed-item a {
+            color: #b92b27;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+            padding: 5px 10px;
+            border: 1px solid #b92b27;
+            border-radius: 5px;
+            background: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar-left .feed-item a:hover {
+            background-color: #b92b27;
+            color: #fff;
         }
 
         .content-center {
@@ -102,34 +140,12 @@
         .content-center h3 {
             color: #b92b27;
             margin-bottom: 15px;
-            font-size: 28px;
+            font-size: 24px;
             text-align: center;
         }
 
-        .content-center h5 {
-            color: #000000;
+        .module-item {
             margin-bottom: 15px;
-            font-size: 20px;
-            text-align: center;
-        }
-        .content-center a {
-            color: #b92b27;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 10px;
-            padding: 5px 10px;
-            border: 1px solid #b92b27;
-            border-radius: 5px;
-            background: #fff;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .content-center a:hover {
-            background: #b92b27;
-            color: #fff;
-        }
-        .feed-item {
-            margin-bottom: 20px;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -137,43 +153,49 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .feed-item p {
+        .module-item h3 {
             font-size: 18px;
+            color: #000;
             margin-bottom: 5px;
-            font-weight: bold;
         }
 
-        .feed-item span {
-            font-size: 14px;
+        .module-item p {
+            font-size: 16px;
             color: #777;
-            display: block;
-            margin-bottom: 10px;
         }
 
-        .feed-item a {
-            color: #b92b27;
-            text-decoration: none;
-            font-weight: bold;
+        .module-enter-button {
             display: inline-block;
             margin-top: 10px;
-            padding: 5px 10px;
+            padding: 10px 15px;
             border: 1px solid #b92b27;
             border-radius: 5px;
-            background: #fff;
+            background-color: #fff;
+            color: #b92b27;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .feed-item a:hover {
-            background: #b92b27;
+        .module-enter-button:hover {
+            background-color: #b92b27;
             color: #fff;
         }
 
-        .user-course-box {
+        .sidebar-right {
+            width: 20%;
             padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
             background: #fff;
+            border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar-right h3 {
+            color: #b92b27;
+            margin-bottom: 10px;
+            font-size: 20px;
             text-align: center;
         }
 
@@ -200,60 +222,32 @@
         footer ul li a:hover {
             text-decoration: underline;
         }
-        header .profile-section button {
-            padding: 10px 15px;
-            font-size: 14px;
-            color: white;
-            background-color: #a02422;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-
-        header .profile-section button:hover {
-            background-color: #b92b27;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-        }
     </style>
 </head>
 <body>
 <header>
-
-
     <div class="logo">
-        <a href="/main/viewall" style="color: white; text-decoration: none;">
-        Spreadit
-    </a></div>
-
-
-
+        <a href="/main/viewall" style="color: white; text-decoration: none;">Spreadit</a>
+    </div>
     <div class="search-bar">
         <input type="text" placeholder="Search across the site...">
     </div>
-
     <div class="profile-section">
         <button id="profileButton">
             <h4 id="userName">User's Name</h4>
             <p id="userEmail">User's Email</p>
         </button>
     </div>
-
 </header>
 <main>
-    <!-- Left Sidebar -->
     <div class="sidebar-left">
         <h3>All Courses</h3>
         <div id="all-courses"></div>
     </div>
-
-    <!-- Center Content -->
     <div class="content-center">
         <h3>Your Feed</h3>
-        <div class="user-course-box" id="user-course"></div>
+        <ul id="user-course-list"></ul>
     </div>
-
-    <!-- Right Sidebar -->
     <div class="sidebar-right">
         <h3>Other Features</h3>
         <p>Additional content can go here.</p>
@@ -270,7 +264,7 @@
 <script>
     window.onload = function () {
         const allCoursesDiv = document.getElementById('all-courses');
-        const userCourseDiv = document.getElementById('user-course');
+        const userCourseList = document.getElementById('user-course-list');
 
         // Fetch all courses
         fetch('/main/getall')
@@ -297,31 +291,35 @@
                 console.error('Error fetching courses:', error);
             });
 
-        // Fetch user-specific course
+        // Fetch user-specific modules
         fetch('/main/userCourse')
             .then(response => response.json())
-            .then(courseData => {
-                if (courseData && courseData.courseDetails) {
-                    const courseDetails = courseData.courseDetails;
+            .then(data => {
+                if (data.courseDetails) {
+                    const moduleItem = document.createElement('div');
+                    moduleItem.classList.add('module-item');
 
-                    const courseName = document.createElement('h5');
-                    courseName.textContent = courseDetails.name;
-                    userCourseDiv.appendChild(courseName);
+                    const moduleName = document.createElement('h3');
+                    moduleName.textContent = data.courseDetails.name;
+                    moduleItem.appendChild(moduleName);
 
-                    const courseDescription = document.createElement('span');
-                    courseDescription.textContent = courseDetails.description;
-                    userCourseDiv.appendChild(courseDescription);
+                    const moduleDescription = document.createElement('p');
+                    moduleDescription.textContent = data.courseDetails.description;
+                    moduleItem.appendChild(moduleDescription);
 
                     const enterButton = document.createElement('a');
-                    enterButton.href = `http://localhost:8081/module/view/bycourse/${courseDetails.courseId}`; // Adjust this URL if necessary
+                    enterButton.href = `http://localhost:8081/module/view/bycourse/${data.courseDetails.courseId}`;
                     enterButton.textContent = 'Enter';
-                    userCourseDiv.appendChild(enterButton);
+                    enterButton.classList.add('module-enter-button');
+                    moduleItem.appendChild(enterButton);
+
+                    userCourseList.appendChild(moduleItem);
                 } else {
-                    userCourseDiv.innerHTML = '<p>No assigned course.</p>';
+                    userCourseList.innerHTML = '<p>No modules assigned to your feed.</p>';
                 }
             })
             .catch(error => {
-                console.error('Error fetching user course:', error);
+                console.error('Error fetching user-specific modules:', error);
             });
 
         // Fetch and set user info
@@ -333,9 +331,11 @@
             })
             .catch(error => console.error('Error fetching user info:', error));
     };
+
     document.getElementById('profileButton').addEventListener('click', () => {
         window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
     });
+
 </script>
 </body>
 </html>
