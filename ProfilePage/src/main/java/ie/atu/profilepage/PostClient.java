@@ -10,4 +10,6 @@ import java.util.List;
 public interface PostClient {
     @GetMapping("/user")
     List<Post> getPostsByUsername();
+    @GetMapping("/like")
+    List<Post> getPostsById();
 }

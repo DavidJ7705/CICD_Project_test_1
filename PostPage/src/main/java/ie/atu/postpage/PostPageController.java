@@ -81,5 +81,9 @@ public class PostPageController {
     public ResponseEntity<List<Post>> getPostsByUsername() {
         return ResponseEntity.ok(postService.getPostsByUsername());
     }
+    @GetMapping("/like")
+    public ResponseEntity<List<Post>> getPostsById() {
+        return ResponseEntity.ok(postService.getPostsById());
+    }
 
 }
