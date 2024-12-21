@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile Page</title>
   <style>
+    <style>
+      /* General body style */
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
@@ -16,6 +18,7 @@
       height: 100vh;
     }
 
+    /* Profile header */
     .profile-header {
       background: white;
       border-bottom: 1px solid #ddd;
@@ -41,40 +44,60 @@
       font-weight: bold;
     }
 
+    /* Post-section layout */
     .post-section {
       flex: 1;
+      display: flex;
       overflow-y: auto;
       padding: 20px;
-      margin-top: 150px; /* Leave space for fixed header */
-      margin-bottom: 70px; /* Leave space for fixed button */
+      margin-top: 200px; /* Adjusted to push content down */
+      margin-bottom: 70px; /* Leave space for the fixed button */
+      gap: 15px;
     }
 
-    .post-section h3 {
+    .column {
+      flex: 1;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .column h3 {
+      text-align: center;
       color: #b92b27;
       margin-bottom: 15px;
     }
 
-    .post {
+    .post,
+    .like,
+    .comment {
       background: #f9f9f9;
       border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
     }
 
-    .post-title {
-      font-size: 18px;
+    .post-title,
+    .like-title,
+    .comment-title {
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       color: #333;
     }
 
-    .post-content {
+    .post-content,
+    .like-content,
+    .comment-content {
       font-size: 14px;
       color: #666;
     }
 
+    /* Back button container */
     .back-button-container {
       position: fixed;
       bottom: 0;
@@ -101,6 +124,7 @@
       background-color: #a02422;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     }
+
   </style>
 </head>
 <body>
@@ -112,9 +136,17 @@
   <div class="profile-item"><span>Course:</span> <span id="course"></span></div>
 </div>
 <div class="post-section">
-  <h3>Your Posts</h3>
-  <div id="postList">
-    <!-- Posts will be appended here -->
+  <div class="column">
+    <h3>Your Posts</h3>
+    <div id="postList"></div>
+  </div>
+  <div class="column">
+    <h3>Your Likes</h3>
+    <div id="likeList"></div>
+  </div>
+  <div class="column">
+    <h3>Your Comments</h3>
+    <div id="commentList"></div>
   </div>
 </div>
 <div class="back-button-container">
@@ -135,35 +167,71 @@
           });
 
   // Fetch user posts
-  fetch('/main/getUserPosts') // Replace with your actual endpoint
+  fetch('/profile/post') // Update to your Talend endpoint
           .then(response => response.json())
           .then(posts => {
             const postList = document.getElementById('postList');
 
-            if (posts.length === 0) {
+            if (Object.keys(posts).length === 0) {
               postList.innerHTML = '<p>No posts to display.</p>';
             } else {
-              posts.forEach(post => {
+              for (const [key, value] of Object.entries(posts)) {
                 const postElement = document.createElement('div');
-                postElement.classList.add('post');
-
-                const postTitle = document.createElement('div');
-                postTitle.classList.add('post-title');
-                postTitle.textContent = post.title; // Replace 'title' with actual property
-
-                const postContent = document.createElement('div');
-                postContent.classList.add('post-content');
-                postContent.textContent = post.content; // Replace 'content' with actual property
-
-                postElement.appendChild(postTitle);
-                postElement.appendChild(postContent);
-
+                postElement.classList.add('post'); // Use your post-specific styling class
+                postElement.innerHTML = `
+          <div class="post-title">${key}</div>
+          <div class="post-content">${value}</div>
+        `;
                 postList.appendChild(postElement);
-              });
+              }
             }
           })
           .catch(error => {
             console.error('Error fetching posts:', error);
+            document.getElementById('postList').innerHTML = '<p>Error loading posts.</p>';
+          });
+
+
+  // Fetch user likes
+  fetch('/main/getUserLikes')
+          .then(response => response.json())
+          .then(likes => {
+            const likesList = document.getElementById('likesList');
+
+            if (likes.length === 0) {
+              likesList.innerHTML = '<p>No likes to display.</p>';
+            } else {
+              likes.forEach(like => {
+                const likeElement = document.createElement('div');
+                likeElement.classList.add('item');
+                likeElement.textContent = like.content; // Replace with actual property
+                likesList.appendChild(likeElement);
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching likes:', error);
+          });
+
+  // Fetch user comments
+  fetch('/main/getUserComments')
+          .then(response => response.json())
+          .then(comments => {
+            const commentsList = document.getElementById('commentsList');
+
+            if (comments.length === 0) {
+              commentsList.innerHTML = '<p>No comments to display.</p>';
+            } else {
+              comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('item');
+                commentElement.textContent = comment.content; // Replace with actual property
+                commentsList.appendChild(commentElement);
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching comments:', error);
           });
 
   // Back button functionality

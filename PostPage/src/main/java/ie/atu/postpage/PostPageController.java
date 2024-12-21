@@ -75,4 +75,11 @@ public class PostPageController {
             return ResponseEntity.ok("Post liked successfully.");
         }
     }
+
+    //Get posts by user_id
+    @GetMapping("/user")
+    public ResponseEntity<List<Post>> getPostsByUsername() {
+        return ResponseEntity.ok(postService.getPostsByUsername());
+    }
+
 }
