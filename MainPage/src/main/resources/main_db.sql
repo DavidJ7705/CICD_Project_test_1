@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `main_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `main_db`;
--- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: main_db
 -- ------------------------------------------------------
--- Server version	8.0.29
+-- Server version	8.0.36
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,7 +27,7 @@ CREATE TABLE `course` (
   `description` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`course_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +36,7 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
-INSERT INTO `course` VALUES (1,'A Software and Development Engineering course teaches the principles of designing, building, and maintaining software systems using various programming languages and development methodologies.','Software Development & Electronic Engineering'),(2,'A college course in Accounting covers the principles of financial record-keeping, analysis, and reporting. Students learn to manage financial statements, budgets, taxes, and audits, preparing them for roles in business, finance, and public accounting.','Accounting'),(3,'\nA Biopharmaceutical Science course covers the development and production of biologically-based drugs, focusing on biotechnology, drug formulation, and regulatory processes.','Biopharmaceutical Science');
+INSERT INTO `course` VALUES (1,'A Software and Development Engineering course teaches the principles of designing, building, and maintaining software systems using various programming languages and development methodologies.','Software Development & Electronic Engineering'),(2,'A college course in Accounting covers the principles of financial record-keeping, analysis, and reporting. Students learn to manage financial statements, budgets, taxes, and audits, preparing them for roles in business, finance, and public accounting.','Accounting'),(3,'A Biopharmaceutical Science course covers the development and production of biologically-based drugs, focusing on biotechnology, drug formulation, and regulatory processes.','Biopharmaceutical Science'),(4,'A law course explores legal principles, systems, and practices, teaching students about rights, responsibilities, and justice in society.','Law'),(5,'A civil engineering course focuses on designing, constructing, and maintaining infrastructure like buildings, bridges, roads, and water systems, emphasizing sustainability and structural safety.','Civil Engineering');
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-18 21:05:38
+-- Dump completed on 2024-12-22 17:47:50
