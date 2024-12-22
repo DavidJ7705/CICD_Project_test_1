@@ -138,6 +138,7 @@ public class PostPageService {
             postMap.put("id", post.getId());
             postMap.put("title", post.getTitle());
             postMap.put("content", post.getContent());
+            postMap.put("username", post.getUsername());
             postMap.put("likes", post.getLikes().size());
             postMap.put("userLiked", post.getLikes().stream().anyMatch(like -> like.getUsername().equals(currentUsername)));
 
