@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posts for Module</title>
     <style>
-        /* Same CSS as before */
+        /* General Styles */
         * {
             margin: 0;
             padding: 0;
@@ -33,22 +33,6 @@
             font-weight: bold;
         }
 
-        header .search-bar {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-        }
-
-        header .search-bar input {
-            width: 60%;
-            max-width: 400px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            font-size: 16px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
         header .profile-section {
             display: flex;
             align-items: center;
@@ -64,6 +48,22 @@
         header .profile-section div h4 {
             font-size: 16px;
             margin-bottom: 2px;
+        }
+
+        header .profile-section button {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: white;
+            background-color: #a02422;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        header .profile-section button:hover {
+            background-color: #b92b27;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
 
         main {
@@ -83,11 +83,24 @@
             overflow-y: auto;
         }
 
-        .sidebar-left h3, .sidebar-right h3 {
+        .sidebar-left h3 {
             color: #b92b27;
             margin-bottom: 10px;
             font-size: 20px;
             text-align: center;
+        }
+
+        .course-item {
+            font-size: 16px;
+            margin: 5px 0;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .course-item:hover {
+            color: #b92b27;
+            text-decoration: underline;
         }
 
         .content-center {
@@ -101,9 +114,8 @@
 
         .content-center h3 {
             color: #b92b27;
-            margin-bottom: 15px;
-            font-size: 24px;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .post-item {
@@ -115,54 +127,24 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .post-item h3 {
+        .post-author {
+            font-size: 14px;
+            color: #555;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .post-title {
             font-size: 18px;
             color: #b92b27;
-            margin-bottom: 5px;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
-        .post-item p {
+        .post-content {
             font-size: 16px;
             color: #555;
-        }
-
-        footer {
-            background: #f8f8f8;
-            padding: 10px 20px;
-            text-align: center;
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        footer ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        footer ul li a {
-            text-decoration: none;
-            color: #b92b27;
-            font-size: 14px;
-        }
-
-        footer ul li a:hover {
-            text-decoration: underline;
-        }
-        header .profile-section button {
-            padding: 10px 15px;
-            font-size: 14px;
-            color: white;
-            background-color: #a02422;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-
-        header .profile-section button:hover {
-            background-color: #b92b27;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            margin-bottom: 10px;
         }
 
         .like-container {
@@ -191,15 +173,36 @@
             font-size: 16px;
             color: #555;
         }
+
+        footer {
+            background: #f8f8f8;
+            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        footer ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        footer ul li a {
+            text-decoration: none;
+            color: #b92b27;
+            font-size: 14px;
+        }
+
+        footer ul li a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 <header>
     <div class="logo"><a href="http://localhost:8080/main/viewall" style="color: white; text-decoration: none;">
         Spreadit</a></div>
-    <div class="search-bar">
-        <input type="text" placeholder="Search posts...">
-    </div>
     <div class="profile-section">
         <button id="profileButton">
             <h4 id="userName">User's Name</h4>
@@ -212,13 +215,15 @@
     <!-- Left Sidebar -->
     <div class="sidebar-left">
         <h3>All Courses</h3>
+        <div id="course-list">
+            <p>Loading courses...</p>
+        </div>
     </div>
 
     <!-- Center Content -->
     <div class="content-center">
         <h3>Posts</h3>
         <div id="posts-container">
-            <!-- Posts will be dynamically loaded here -->
             <p>Loading posts...</p>
         </div>
     </div>
@@ -240,12 +245,35 @@
 
 <script>
     window.onload = function () {
-        // Extract moduleId from the URL path
+        // Fetch courses for the sidebar
+        fetch('/courses')
+            .then(response => response.json())
+            .then(courses => {
+                const courseList = document.getElementById('course-list');
+                courseList.innerHTML = '';
+                if (courses.length > 0) {
+                    courses.forEach(course => {
+                        const courseItem = document.createElement('div');
+                        courseItem.classList.add('course-item');
+                        courseItem.textContent = course.name;
+                        courseItem.onclick = () => {
+                            window.location.href = `/courses/${course.id}/modules`;
+                        };
+                        courseList.appendChild(courseItem);
+                    });
+                } else {
+                    courseList.innerHTML = '<p>No courses available.</p>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('course-list').innerHTML = '<p>Error loading courses. Please try again later.</p>';
+            });
+
+        // Fetch posts for the module
         const pathParts = window.location.pathname.split('/');
         const moduleId = pathParts[pathParts.length - 1];
 
         const postsContainer = document.getElementById('posts-container');
-
         if (moduleId) {
             fetch(`/post/module/${moduleId}/detailed`)
                 .then(response => response.json())
@@ -256,11 +284,18 @@
                             const postItem = document.createElement('div');
                             postItem.classList.add('post-item');
 
-                            const postTitle = document.createElement('h3');
+                            const postAuthor = document.createElement('div');
+                            postAuthor.classList.add('post-author');
+                            postAuthor.textContent = `Posted by ${post.username}`;
+                            postItem.appendChild(postAuthor);
+
+                            const postTitle = document.createElement('div');
+                            postTitle.classList.add('post-title');
                             postTitle.textContent = post.title;
                             postItem.appendChild(postTitle);
 
-                            const postContent = document.createElement('p');
+                            const postContent = document.createElement('div');
+                            postContent.classList.add('post-content');
                             postContent.textContent = post.content;
                             postItem.appendChild(postContent);
 
@@ -294,8 +329,6 @@
                 .catch(error => {
                     postsContainer.innerHTML = '<p>Error loading posts. Please try again later.</p>';
                 });
-        } else {
-            postsContainer.innerHTML = '<p>Module ID not found in URL.</p>';
         }
 
         function toggleLike(postId, likeButton, likeCountElement) {
@@ -316,10 +349,8 @@
                 .catch(() => console.error('Error toggling like.'));
         }
 
-
-
-        // Load user info
-        fetch('/post/getAll') // Update this URL to the correct user info endpoint
+        // User Profile
+        fetch('/post/getAll')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('userName').textContent = data["Signed In User"];
@@ -327,8 +358,9 @@
             })
             .catch(error => console.error('Error fetching user info:', error));
     };
+
     document.getElementById('profileButton').addEventListener('click', () => {
-        window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
+        window.location.href = 'http://localhost:8085/view-profile';
     });
 </script>
 </body>
