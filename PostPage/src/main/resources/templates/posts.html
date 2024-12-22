@@ -32,7 +32,21 @@
             font-size: 24px;
             font-weight: bold;
         }
+        header .search-bar {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
 
+        header .search-bar input {
+            width: 60%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
         header .profile-section {
             display: flex;
             align-items: center;
@@ -203,6 +217,9 @@
 <header>
     <div class="logo"><a href="http://localhost:8080/main/viewall" style="color: white; text-decoration: none;">
         Spreadit</a></div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search across the site...">
+    </div>
     <div class="profile-section">
         <button id="profileButton">
             <h4 id="userName">User's Name</h4>
