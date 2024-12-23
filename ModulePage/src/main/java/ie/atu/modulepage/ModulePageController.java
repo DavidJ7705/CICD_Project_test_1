@@ -20,7 +20,7 @@ public class ModulePageController {
 
 
     //Return all modules.
-    @GetMapping("/getall")
+    @GetMapping("/getallmodules")
     public ResponseEntity<Map<String, Object>> getAllModules() {
         Map<String, Object> modules = moduleService.getAllModules();
         return ResponseEntity.ok(modules);
@@ -49,7 +49,7 @@ public class ModulePageController {
         Map<String, String> userInfo = moduleService.getSignedInUserInfo();
         return ResponseEntity.ok(userInfo);
     }
-    @GetMapping("/getallcourses")
+    @GetMapping("/getall")
     public ResponseEntity<Map<String, Object>> getAllCourses() {
         Map<String, Object> response = moduleService.getAllCourses();
         return ResponseEntity.ok(response);

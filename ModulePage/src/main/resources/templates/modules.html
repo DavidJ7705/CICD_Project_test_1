@@ -236,8 +236,8 @@
 
   <div class="logo">
     <a href="http://localhost:8080/main/viewall" style="color: white; text-decoration: none;">
-    Spreadit
-  </a></div>
+      Spreadit
+    </a></div>
 
 
   <div class="search-bar">
@@ -253,18 +253,14 @@
   </div>
 
 </header>
-
 <main>
-  <!-- Left Sidebar (All Courses) -->
+  <!-- Left Sidebar (Modules for Selected Course) -->
   <div class="sidebar-left">
     <h3>All Courses</h3>
-    <div id="all-courses">
-      <!-- Dynamic courses data will be inserted here -->
-      <p>Loading courses...</p>
-    </div>
+    <div id="all-courses"></div>
   </div>
 
-  <!-- Center Content (Modules for Selected Course) -->
+  <!-- Center Content (Module Details) -->
   <div class="content-center">
     <h3>Modules for Selected Course</h3>
     <ul>
@@ -281,12 +277,13 @@
     </div>
   </div>
 
-  <!-- Right Sidebar (Other Features) -->
+  <!-- Right Sidebar -->
   <div class="sidebar-right">
-    <h3>Other Features</h3>
-    <p>Additional content can go here.</p>
+    <h3>All Modules</h3>
+    <div id="all-modules"></div> <!-- This will show all modules -->
   </div>
 </main>
+
 
 <footer>
   <ul>
@@ -299,17 +296,117 @@
 <script>
   window.onload = function () {
     const allCoursesDiv = document.getElementById('all-courses');
+    const allModulesDiv = document.getElementById('all-modules');
 
+    // Function to add messages directly to the page
+    function displayMessage(targetDiv, message, isError = false) {
+      const p = document.createElement('p');
+      p.textContent = message;
+      p.style.color = isError ? 'red' : 'green'; // Red for errors, green for success
+      targetDiv.appendChild(p);
+    }
 
-      fetch('/module/getSignedInUser')
+    // Fetch All Courses
+    fetch('/module/getall')
+            .then(response => response.json())
+            .then(data => {
+              displayMessage(allCoursesDiv, 'Successfully fetched courses.');
+              let courses;
+              try {
+                courses = JSON.parse(data.Courses).Courses;
+              } catch (error) {
+                displayMessage(allCoursesDiv, `Error parsing courses: ${error.message}`, true);
+                return;
+              }
+
+              if (Array.isArray(courses) && courses.length > 0) {
+                allCoursesDiv.innerHTML = ''; // Clear placeholder content
+                courses.forEach(course => {
+                  const courseItem = document.createElement('div');
+                  courseItem.classList.add('feed-item');
+
+                  const courseName = document.createElement('p');
+                  courseName.textContent = course.name;
+                  courseItem.appendChild(courseName);
+
+                  const courseDescription = document.createElement('span');
+                  courseDescription.textContent = course.description;
+                  courseItem.appendChild(courseDescription);
+
+                  const enterButton = document.createElement('a');
+                  enterButton.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`;
+                  enterButton.textContent = 'Enter';
+                  enterButton.classList.add('module-enter-button');
+                  courseItem.appendChild(enterButton);
+
+                  allCoursesDiv.appendChild(courseItem);
+                });
+              } else {
+                displayMessage(allCoursesDiv, 'No courses found.', true);
+              }
+            })
+            .catch(error => {
+              displayMessage(allCoursesDiv, `Error fetching courses: ${error.message}`, true);
+            });
+
+    // Fetch All Modules
+    fetch('/module/getallmodules')
+            .then(response => response.json())  // Automatically parses JSON into a JavaScript object
+            .then(data => {
+              displayMessage(allModulesDiv, 'Successfully fetched modules.');
+
+              const modules = data.modules;  // Directly access the 'modules' field from the response
+
+              if (Array.isArray(modules) && modules.length > 0) {
+                allModulesDiv.innerHTML = ''; // Clear placeholder content
+
+                modules.forEach(module => {
+                  const moduleItem = document.createElement('div');
+                  moduleItem.classList.add('feed-item');
+
+                  const moduleName = document.createElement('p');
+                  moduleName.textContent = module.name;
+                  moduleItem.appendChild(moduleName);
+
+                  const moduleDescription = document.createElement('span');
+                  moduleDescription.textContent = module.description;
+                  moduleItem.appendChild(moduleDescription);
+
+                  const enterButton = document.createElement('a');
+                  enterButton.href = `http://localhost:8082/post/view/module/${module.id}`;
+                  enterButton.textContent = 'Enter';
+                  enterButton.classList.add('module-enter-button');
+                  moduleItem.appendChild(enterButton);
+
+                  allModulesDiv.appendChild(moduleItem);
+                });
+              } else {
+                displayMessage(allModulesDiv, 'No modules found.', true);
+              }
+            })
+            .catch(error => {
+              displayMessage(allModulesDiv, `Error fetching modules: ${error.message}`, true);
+            });
+
+    // Fetch Signed In User Info
+    fetch('/module/getSignedInUser')
             .then(response => response.json())
             .then(userData => {
-              document.getElementById('userName').textContent = userData.Name;
-              document.getElementById('userEmail').textContent = userData.Email;
+              document.getElementById('userName').textContent = userData.Name || "Name not found";
+              document.getElementById('userEmail').textContent = userData.Email || "Email not found";
             })
-            .catch(error => console.error('Error fetching user info:', error));
-
+            .catch(error => {
+              const profileButton = document.getElementById('profileButton');
+              const errorMessage = document.createElement('p');
+              errorMessage.textContent = `Error fetching user info: ${error.message}`;
+              errorMessage.style.color = 'red';
+              profileButton.appendChild(errorMessage);
+            });
   };
+
+
+
+
   document.getElementById('profileButton').addEventListener('click', () => {
     window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
   });
