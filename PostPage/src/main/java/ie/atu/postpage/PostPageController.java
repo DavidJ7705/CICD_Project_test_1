@@ -49,6 +49,7 @@ public class PostPageController {
 
         // Fetch the userId by calling the AuthClient
         Long userId = authClient.getUserIdByUsername(loggedInUsername).getBody();  // Calling the new endpoint
+         newPost.setUsername(loggedInUsername);
         newPost.setUserId(userId);  // Setting the user ID to associate with the post
 
         newPost.setModuleId(moduleId);  // Setting the module ID
