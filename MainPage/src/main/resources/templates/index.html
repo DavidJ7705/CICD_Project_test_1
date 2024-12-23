@@ -79,7 +79,7 @@
             gap: 20px;
         }
 
-        .sidebar-left {
+        .sidebar-left, .sidebar-right {
             width: 25%;
             padding: 15px;
             background: #fff;
@@ -88,14 +88,14 @@
             overflow-y: auto;
         }
 
-        .sidebar-left h3 {
+        .sidebar-left h3, .sidebar-right h3 {
             color: #b92b27;
             margin-bottom: 10px;
             font-size: 20px;
             text-align: center;
         }
 
-        .sidebar-left .feed-item {
+        .feed-item {
             margin-bottom: 15px;
             padding: 15px;
             border: 1px solid #ddd;
@@ -104,13 +104,13 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar-left .feed-item p {
+        .feed-item p {
             font-size: 16px;
             margin-bottom: 5px;
             font-weight: bold;
         }
 
-        .sidebar-left .feed-item a {
+        .feed-item a {
             color: #b92b27;
             text-decoration: none;
             font-weight: bold;
@@ -123,7 +123,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .sidebar-left .feed-item a:hover {
+        .feed-item a:hover {
             background-color: #b92b27;
             color: #fff;
         }
@@ -183,22 +183,6 @@
             color: #fff;
         }
 
-        .sidebar-right {
-            width: 25%;
-            padding: 15px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-        }
-
-        .sidebar-right h3 {
-            color: #b92b27;
-            margin-bottom: 10px;
-            font-size: 20px;
-            text-align: center;
-        }
-
         footer {
             background: #f8f8f8;
             padding: 10px 20px;
@@ -245,12 +229,12 @@
         <div id="all-courses"></div>
     </div>
     <div class="content-center">
-        <h3>Your Feed</h3>
+        <h3>Your Courses</h3>
         <ul id="user-course-list"></ul>
     </div>
     <div class="sidebar-right">
-        <h3>Other Features</h3>
-        <p>Additional content can go here.</p>
+        <h3>All Modules</h3>
+        <div id="all-modules"></div>
     </div>
 </main>
 <footer>
@@ -262,39 +246,53 @@
 </footer>
 
 <script>
+    // Helper function to render items (courses or modules)
+    function renderItems(data, container, type = 'course') {
+        if (Array.isArray(data)) {
+            container.innerHTML = ''; // Clear the container
+            if (data.length === 0) {
+                container.innerHTML = `<p>No ${type}s available at the moment.</p>`;
+            } else {
+                data.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('feed-item');
+
+                    const itemName = document.createElement('p');
+                    itemName.textContent = item.name;
+                    itemDiv.appendChild(itemName);
+
+                    const itemDescription = document.createElement('p');
+                    itemDescription.textContent = item.description;
+                    itemDescription.style.fontSize = '14px';
+                    itemDescription.style.color = '#555';
+                    itemDiv.appendChild(itemDescription);
+
+                    const enterButton = document.createElement('a');
+                    enterButton.href = `http://localhost:8081/module/view/by${type}/${item.id}`;
+                    enterButton.textContent = 'Enter';
+                    itemDiv.appendChild(enterButton);
+
+                    container.appendChild(itemDiv);
+                });
+            }
+        } else {
+            container.innerHTML = `<p>Error: ${type} data is not in an expected format.</p>`;
+            console.error(`${type} data is not an array:`, data);
+        }
+    }
+
     window.onload = function () {
         const allCoursesDiv = document.getElementById('all-courses');
+        const allModulesDiv = document.getElementById('all-modules');
         const userCourseList = document.getElementById('user-course-list');
 
         // Fetch all courses
         fetch('/main/getall')
             .then(response => response.json())
-            .then(data => {
-                allCoursesDiv.innerHTML = '';
-                data.Courses.forEach(course => {
-                    const courseItem = document.createElement('div');
-                    courseItem.classList.add('feed-item');
-
-                    const courseName = document.createElement('p');
-                    courseName.textContent = course.name;
-                    courseItem.appendChild(courseName);
-
-                    const courseDescription = document.createElement('p');
-                    courseDescription.textContent = course.description;
-                    courseDescription.style.fontSize = '14px';
-                    courseDescription.style.color = '#555';
-                    courseItem.appendChild(courseDescription);
-
-                    const enterButton = document.createElement('a');
-                    enterButton.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`;
-                    enterButton.textContent = 'Enter';
-                    courseItem.appendChild(enterButton);
-
-                    allCoursesDiv.appendChild(courseItem);
-                });
-            })
+            .then(data => renderItems(data.Courses, allCoursesDiv, 'course'))
             .catch(error => {
                 console.error('Error fetching courses:', error);
+                allCoursesDiv.innerHTML = `<p>Error fetching courses: ${error.message}</p>`;
             });
 
         // Fetch user-specific modules
@@ -326,6 +324,24 @@
             })
             .catch(error => {
                 console.error('Error fetching user-specific modules:', error);
+                userCourseList.innerHTML = `<p>Error fetching user-specific modules: ${error.message}</p>`;
+            });
+
+        // Fetch all modules
+        fetch('/main/getallmodules')
+            .then(response => response.json())
+            .then(data => {
+                try {
+                    const modulesData = JSON.parse(data.modules);
+                    renderItems(modulesData.modules, allModulesDiv, 'module');
+                } catch (e) {
+                    allModulesDiv.innerHTML = `<p>Error parsing modules data: ${e.message}</p>`;
+                    console.error('Error parsing modules data:', e);
+                }
+            })
+            .catch(error => {
+                allModulesDiv.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
+                console.error('Error fetching modules:', error);
             });
 
         // Fetch and set user info
@@ -341,7 +357,6 @@
     document.getElementById('profileButton').addEventListener('click', () => {
         window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
     });
-
 </script>
 </body>
 </html>

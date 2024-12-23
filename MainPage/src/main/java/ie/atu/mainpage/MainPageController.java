@@ -23,6 +23,13 @@ public class MainPageController {
         Map<String, Object> response = courseService.getAllCourses();
         return ResponseEntity.ok(response);
     }
+    //Return all modules.
+    @GetMapping("/getallmodules")
+    public ResponseEntity<Map<String, Object>> getAllModules() {
+        Map<String, Object> modules = courseService.getAllModules();
+        return ResponseEntity.ok(modules);
+    }
+
     @GetMapping("/userCourse")
     public ResponseEntity<Map<String, Object>> getUserCourses() {
         Map<String, Object> response = courseService.getUserCourses();
