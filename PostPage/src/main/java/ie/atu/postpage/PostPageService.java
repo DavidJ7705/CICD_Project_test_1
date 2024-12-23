@@ -85,14 +85,25 @@ public class PostPageService {
     }
 
     // Add a comment to a post
-    public Comments addCommentToPost(Long postId, Comments comment) {
+    public void addCommentToPost(Long postId, Comments comment) {
+        // Ensure the post exists
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
+                .orElseThrow(() -> new RuntimeException("Post not found with ID: " + postId));
 
+        String username = authClient.getSignedUsername();
+
+        // Set the post in the comment
         comment.setPost(post);
-        comment.setUsername(authClient.getSignedUsername());
-        return commentsRepository.save(comment);
+        comment.setUsername(username); // Set the username dynamically
+
+        // Save the comment
+        commentsRepository.save(comment);
     }
+
+    public List<Comments> getCommentsForPost(Long postId) {
+        return commentsRepository.findByPostId(postId);
+    }
+
 
     @Transactional
     public Likes toggleLike(Long postId){

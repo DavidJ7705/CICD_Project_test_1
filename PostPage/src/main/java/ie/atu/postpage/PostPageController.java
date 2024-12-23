@@ -93,4 +93,11 @@ public class PostPageController {
         List<Map<String, Object>> posts = postService.getPostsAUserLiked(moduleId, currentUsername);
         return ResponseEntity.ok(posts);
     }
+
+    // Fetch comments for a specific post
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<List<Comments>> getCommentsForPost(@PathVariable Long postId) {
+        List<Comments> comments = postService.getCommentsForPost(postId);
+        return ResponseEntity.ok(comments);
+    }
 }
