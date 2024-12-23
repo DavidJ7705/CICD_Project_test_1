@@ -20,8 +20,7 @@ public class Course {
 
     private String description;
 
-    public Course(Long courseId, String name, String description) {
-        this.courseId = courseId;
+    public Course(String name, String description) {
         this.name = name;
         this.description = description;
     }

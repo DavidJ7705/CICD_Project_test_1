@@ -90,4 +90,9 @@ public class AuthController {
         return ResponseEntity.ok(courses);
     }
 
+    @GetMapping("/userType")
+    public boolean isModerator(){
+        return authService.isModerator();
+    }
+
 }

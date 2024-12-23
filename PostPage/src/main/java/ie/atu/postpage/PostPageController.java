@@ -42,7 +42,7 @@ public class PostPageController {
     }
 
     // Add a new post
-    @PostMapping("/")
+    @PostMapping("/addpost")
     public ResponseEntity<Post> addPost(@RequestBody Post post) {
         return ResponseEntity.ok(postService.addPost(post));
     }

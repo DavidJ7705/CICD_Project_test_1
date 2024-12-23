@@ -88,15 +88,31 @@ public class MainPageService {
     }
 
     // Add a new course
-    public Course addCourse(Course course) {
-        return courseRepository.save(course);
+    public String addCourse(String name, String description) {
+
+        if (!authClient.isModerator()){
+            return ("Fail");
+        }
+        Course newCourse = new Course(name, description);
+        courseRepository.save(newCourse);
+        return newCourse.getName() + " is added!";
     }
 
     // Update an existing course
-    public Course updateCourse(Long id, Course updatedCourse) {
-        Course course = getCourseById(id);
-        course.setName(updatedCourse.getName());
-        return courseRepository.save(course);
+    public String updateCourse(Long id, Course updatedCourse) {
+        if (!authClient.isModerator()){
+            return ("Fail");
+        }
+        List<Course> courses = courseRepository.findAll();
+        for (Course c : courses){
+            if (c.getCourseId().equals(id)){
+                c.setName(updatedCourse.getName());
+                c.setDescription(updatedCourse.getDescription());
+                courseRepository.save(c);
+                return updatedCourse.getName() + " updated!";
+            }
+        }
+        return "Error updating course!";
     }
 
     // Delete a course
