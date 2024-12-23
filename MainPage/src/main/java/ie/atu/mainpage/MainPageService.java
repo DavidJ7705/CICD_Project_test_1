@@ -39,7 +39,15 @@ public class MainPageService {
 
         return response;
     }
+    // Get all modules for a specific course
+    public Map<String, Object> getAllModules() {
+        String modules = moduleClient.getAllModules();
+        System.out.println("Fetched modules: " + modules);
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("modules",modules);
+        return response;
+    }
     // Get a course by ID
     public Course getCourseById(Long id) {
 

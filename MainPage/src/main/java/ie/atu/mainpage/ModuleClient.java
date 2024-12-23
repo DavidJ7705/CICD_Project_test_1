@@ -11,4 +11,7 @@ import java.util.Map;
 public interface ModuleClient {
     @GetMapping("/getModuleName")
     List<Map<String, String>> getModuleName();
+
+    @GetMapping("/getallmodules")
+    String getAllModules();
 }
