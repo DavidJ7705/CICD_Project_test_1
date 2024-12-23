@@ -27,13 +27,9 @@ public class ModulePageService {
 
     // Get all modules for a specific course
     public Map<String, Object> getAllModules() {
-        String signedUser = authClient.getSignedUsername();
         List <Module> modules = moduleRepository.findAll();
-
         Map<String, Object> response = new HashMap<>();
-        response.put("signedUser", signedUser);
         response.put("modules",modules);
-
         return response;
     }
 
@@ -82,10 +78,8 @@ public class ModulePageService {
     // Get all courses
     public Map<String, Object> getAllCourses() {
         String courses = mainClient.getAllCourses();
-
         Map<String, Object> response = new HashMap<>();
         response.put("Courses", courses);
-
         return response;
     }
     public Long getSelectedModule(){
