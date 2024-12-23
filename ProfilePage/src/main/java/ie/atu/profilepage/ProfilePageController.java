@@ -31,9 +31,4 @@ public class ProfilePageController {
     public String updateProfile(@RequestBody Map<String, Object> updatedDetails) {
         return profilePageService.updateProfile(updatedDetails);
     }
-
-    @GetMapping("/comment")
-    public Map<String, String> getUserComment(){
-        return profilePageService.getUserComment();
-    }
 }
