@@ -165,6 +165,7 @@
             display: flex;
             align-items: center;
             margin-top: 10px;
+            gap:10px;
         }
 
         .like-button {
@@ -175,6 +176,8 @@
             color: white; /* White for unliked hearts */
             text-shadow: 0px 0px 1px black; /* Black outline for visibility */
             transition: color 0.3s ease, text-shadow 0.3s ease;
+            margin-right: 10px; /* Adds space between the like button and the like count */
+
         }
 
         .like-button.liked {
@@ -183,7 +186,6 @@
         }
 
         .like-count {
-            margin-left: 10px;
             font-size: 16px;
             color: #555;
         }
@@ -211,6 +213,101 @@
         footer ul li a:hover {
             text-decoration: underline;
         }
+
+        .comments-button {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: white;
+            background-color: #b92b27;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+            margin-left: 20px; /* Adds space between the like count and comments button */
+        }
+
+        .comments-button:hover {
+            background-color: #a02422;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 10px;
+            width: 60%;
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+
+        }
+
+        .popup-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 50px;
+        }
+
+        .popup-comments {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .close-btn {
+            background-color: #b92b27;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background-color: #a02422;
+        }
+
+        button[onclick="submitComment()"] {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: white;
+            background-color: #b92b27;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        button[onclick="submitComment()"]:hover {
+            background-color: #a02422;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        button[onclick="submitComment()"]:active {
+            background-color: #8e1f1b;
+            box-shadow: none;
+        }
+
+
     </style>
 </head>
 <body>
@@ -252,6 +349,19 @@
     </div>
 </main>
 
+<div id="commentPopup" class="popup">
+    <div class="popup-content">
+        <button class="close-btn" onclick="closePopup()">x</button>
+        <div class="popup-header" id="popupPostTitle"></div>
+        <p id="popupPostContent" style="text-align: left; margin-bottom: 20px; color: #555;"></p> <!-- Post content -->
+        <hr>
+        <br>
+        <div class="popup-comments" id="popupComments"></div>
+        <textarea id="popupCommentInput" placeholder="Write a comment..." style="width: 100%;"></textarea>
+        <button onclick="submitComment()">Add Comment</button>
+    </div>
+</div>
+
 <footer>
     <ul>
         <li><a href="#">About</a></li>
@@ -261,6 +371,61 @@
 </footer>
 
 <script>
+    let currentPostId;
+
+    function openPopup(postId, postTitle,postContent) {
+        currentPostId = postId;
+        document.getElementById('popupPostTitle').innerText = postTitle;
+        document.getElementById('popupPostContent').innerText = postContent;
+        document.getElementById('popupComments').innerHTML = 'Loading comments...';
+        document.getElementById('commentPopup').style.display = 'flex';
+
+        fetch(`/post/${postId}/comments`)
+            .then(response => response.json())
+            .then(comments => {
+                const commentsDiv = document.getElementById('popupComments');
+                if (comments && comments.length > 0) {
+                    commentsDiv.innerHTML = comments.map(comment => `<p><strong>${comment.username}:</strong> ${comment.comment}</p>`).join('');
+                } else {
+                    commentsDiv.innerHTML = '<p>No comments yet.</p>';
+                }
+            })
+            .catch(() => {
+                document.getElementById('popupComments').innerHTML = '<p>Error loading comments.</p>';
+            });
+    }
+
+    function closePopup() {
+        document.getElementById('commentPopup').style.display = 'none';
+        document.getElementById('popupCommentInput').value = '';
+    }
+
+    function submitComment() {
+        const commentText = document.getElementById('popupCommentInput').value;
+        const username = "loggedUser"; // Replace with dynamic username from session or backend.
+
+        if (!commentText || commentText.trim() === '') {
+            alert('Please write a comment before submitting.');
+            return;
+        }
+
+        fetch(`/post/${currentPostId}/comment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ comment: commentText, username })
+        })
+            .then(() => {
+                // Clear the input text after successful submission
+                document.getElementById('popupCommentInput').value = '';
+
+                // Refresh the comments section
+                openPopup(currentPostId, document.getElementById('popupPostTitle').innerText, document.getElementById('popupPostContent').innerText);
+            })
+            .catch(error => {
+                console.error('Error submitting comment:', error);
+            });
+    }
+
     window.onload = function () {
         // Fetch courses for the sidebar
         fetch('/courses')
@@ -334,6 +499,12 @@
                             likeButton.addEventListener('click', () => toggleLike(post.id, likeButton, likeCount));
                             likeContainer.appendChild(likeButton);
                             likeContainer.appendChild(likeCount);
+
+                            const commentsButton = document.createElement('button');
+                            commentsButton.classList.add('comments-button');
+                            commentsButton.textContent = 'Comments';
+                            commentsButton.addEventListener('click', () => openPopup(post.id, post.title, post.content));
+                            likeContainer.appendChild(commentsButton);
 
                             postItem.appendChild(likeContainer);
 
