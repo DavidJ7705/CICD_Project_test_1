@@ -95,16 +95,27 @@ public class ModulePageService {
     }
 
     // Add a new module
-    public Module addModule(Module module) {
-        return moduleRepository.save(module);
+    public String addModule(String name, String description) {
+        if (!authClient.isModerator()){
+            return "Fail";
+        }
+        long selectedCourseId = mainClient.getSelectedCourse();
+        Module newModule = new Module (name, selectedCourseId, description);
+        moduleRepository.save(newModule);
+        return "Success";
     }
 
     // Update a module
-    public Module updateModule(Long id, Module updatedModule) {
-        Module module = getModuleById(id);
-        module.setName(updatedModule.getName());
-        module.setCourseId(updatedModule.getCourseId());
-        return moduleRepository.save(module);
+    public String updateModule(Long id, Module module) {
+        if (!authClient.isModerator()){
+            return "Fail";
+        }
+        Module updatedModule = moduleRepository.findByModuleId(id);
+        updatedModule.setName(module.getName());
+        updatedModule.setDescription(module.getDescription());
+        updatedModule.setCourseId(updatedModule.getCourseId());
+        moduleRepository.save(updatedModule);
+        return "Success";
     }
 
     // Delete a module

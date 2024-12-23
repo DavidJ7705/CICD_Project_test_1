@@ -22,8 +22,7 @@ public class Module{
     public Module(){
 
     }
-    public Module(Long id, String name, Long courseId, String description) {
-        this.id = id;
+    public Module(String name, Long courseId, String description) {
         this.name = name;
         this.courseId = courseId;
         this.description=description;

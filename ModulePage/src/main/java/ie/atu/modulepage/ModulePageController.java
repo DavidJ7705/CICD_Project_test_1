@@ -65,15 +65,27 @@ public class ModulePageController {
     }
 
     // Add a new module
-    @PostMapping("/")
-    public ResponseEntity<Module> addModule(@RequestBody Module module) {
-        return ResponseEntity.ok(moduleService.addModule(module));
+    @PostMapping("/addModule")
+    public ResponseEntity<String> addModule(@RequestBody Module module) {
+        String response = moduleService.addModule(module.getName(), module.getDescription());
+        if ((response.startsWith("Success"))){
+            return ResponseEntity.ok(response);
+        }
+        else{
+            return ResponseEntity.status(400).body(response);
+        }
     }
 
     // Update a module
-    @PutMapping("/{id}")
-    public ResponseEntity<Module> updateModule(@PathVariable Long id, @RequestBody Module updatedModule) {
-        return ResponseEntity.ok(moduleService.updateModule(id, updatedModule));
+    @PutMapping("/updateModule/{id}")
+    public ResponseEntity<String> updateModule(@PathVariable Long id, @RequestBody Module module) {
+        String response = moduleService.updateModule(id, module);
+        if ((response.startsWith("Success"))){
+            return ResponseEntity.ok(response);
+        }
+        else{
+            return ResponseEntity.status(400).body(response);
+        }
     }
 
     // Delete a module

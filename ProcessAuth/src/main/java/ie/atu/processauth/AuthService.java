@@ -68,19 +68,12 @@ public class AuthService {
         }
 
         // Check userType to determine the role
-        if (person.getUserType() == 1) {
             SignedUsername = userName;
             SignedName = person.getName();
             SignedEmail = person.getEmail();
             SignedCourse = person.getCourseId();
 
             return "Login successful! Welcome, " + SignedUsername + "! Name: "+ SignedName + ", Email: " + SignedEmail;
-        } else if (person.getUserType() == 2) {
-            return "Login successful! Welcome, Moderator!";
-        } else {
-            return "Unknown user role!";
-        }
-
     }
 
 
@@ -154,6 +147,11 @@ public class AuthService {
             System.err.println("Error fetching courses: " + e.getMessage());
             return List.of();
         }
+    }
+
+    public boolean isModerator(){
+        Optional<Person> signedPerson = personRepository.findByUserName(SignedUsername);
+        return signedPerson.map(person -> person.getUserType() == 2).orElse(false);
     }
 
 }

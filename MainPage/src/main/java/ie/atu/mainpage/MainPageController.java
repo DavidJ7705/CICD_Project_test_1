@@ -40,15 +40,17 @@ public class MainPageController {
     }
 
     // Add a new course
-    @PostMapping("/")
-    public ResponseEntity<Course> addCourse(@RequestBody Course course) {
-        return ResponseEntity.ok(courseService.addCourse(course));
+    @PostMapping("/addCourse")
+    public String addCourse(@RequestBody Course course) {
+        String response = courseService.addCourse(course.getName(), course.getDescription());
+        return response;
     }
 
     // Update a course
-    @PutMapping("/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course updatedCourse) {
-        return ResponseEntity.ok(courseService.updateCourse(id, updatedCourse));
+    @PutMapping("/updateCourse/{id}")
+    public String updateCourse(@PathVariable Long id, @RequestBody Course updatedCourse) {
+        String response = courseService.updateCourse(id, updatedCourse);
+        return response;
     }
 
     // Delete a course

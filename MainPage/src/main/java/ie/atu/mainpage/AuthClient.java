@@ -18,4 +18,6 @@ public interface AuthClient {
     String getSignedEmail();
     @GetMapping("/userCourse")
     Long getCourseIdByUsername();
+    @GetMapping("/userType")
+    boolean isModerator();
 }
