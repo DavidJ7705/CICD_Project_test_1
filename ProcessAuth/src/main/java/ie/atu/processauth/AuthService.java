@@ -154,4 +154,13 @@ public class AuthService {
         return signedPerson.map(person -> person.getUserType() == 2).orElse(false);
     }
 
+    public Long getUserIdByUsername(String username) {
+        Optional<Person> person = personRepository.findByUserName(username);
+        if (person.isPresent()) {
+            return person.get().getUserId();  // Return the userId from the Person object
+        } else {
+            throw new RuntimeException("User not found with username: " + username);
+        }
+    }
+
 }

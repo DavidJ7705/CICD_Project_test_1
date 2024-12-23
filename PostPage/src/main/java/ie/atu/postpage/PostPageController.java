@@ -42,10 +42,23 @@ public class PostPageController {
     }
 
     // Add a new post
-    @PostMapping("/addpost")
-    public ResponseEntity<Post> addPost(@RequestBody Post post) {
-        return ResponseEntity.ok(postService.addPost(post));
+    @PostMapping("/{moduleId}/addpost")
+    public ResponseEntity<Post> addPost(@PathVariable Long moduleId,@RequestBody Post newPost) {
+        // Get the username of the logged-in user
+        String loggedInUsername = authClient.getSignedUsername();  // This is using your existing method to get the username
+
+        // Fetch the userId by calling the AuthClient
+        Long userId = authClient.getUserIdByUsername(loggedInUsername).getBody();  // Calling the new endpoint
+        newPost.setUserId(userId);  // Setting the user ID to associate with the post
+
+        newPost.setModuleId(moduleId);  // Setting the module ID
+
+        Post savedPost = postService.addPost(newPost);
+        return ResponseEntity.ok(savedPost);
     }
+
+
+
 
     // Update a post
     @PutMapping("/{id}")

@@ -337,6 +337,9 @@
     <!-- Center Content -->
     <div class="content-center">
         <h3>Posts</h3>
+        <button onclick="openAddPostModal()" style="margin-bottom: 20px; padding: 10px 20px; background-color: #b92b27; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Add Post
+        </button>
         <div id="posts-container">
             <p>Loading posts...</p>
         </div>
@@ -348,6 +351,18 @@
         <p>Additional content can go here.</p>
     </div>
 </main>
+
+
+<!-- Add Post Modal -->
+<div id="addPostModal" class="popup">
+    <div class="popup-content">
+        <button class="close-btn" onclick="closeAddPostModal()">x</button>
+        <h3>Create a New Post</h3>
+        <input type="text" id="postTitle" placeholder="Post Title" style="width: 100%; margin-bottom: 10px; padding: 10px;">
+        <textarea id="postContent" placeholder="Post Content" style="width: 100%; margin-bottom: 10px; padding: 10px;"></textarea>
+        <button onclick="submitPost()">Submit Post</button>
+    </div>
+</div>
 
 <div id="commentPopup" class="popup">
     <div class="popup-content">
@@ -372,6 +387,53 @@
 
 <script>
     let currentPostId;
+
+    function submitPost() {
+        const title = document.getElementById('postTitle').value;
+        const content = document.getElementById('postContent').value;
+
+        if (!title || !content) {
+            alert('Please fill out all fields.');
+            return;
+        }
+
+        // Assuming you have the logged-in username stored somewhere, e.g., in the session
+        const username = document.getElementById('userName').textContent.trim(); // or from your session
+
+        const moduleId = window.location.pathname.split('/').pop(); // Extracting the moduleId from the URL path
+
+        fetch(`/post/${moduleId}/addpost`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: title,
+                content: content,
+                moduleId: parseInt(moduleId),
+                username: username
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('Post added successfully!');
+                closeAddPostModal();
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error adding post:', error);
+                alert('Failed to add post.');
+            });
+    }
+
+    function openAddPostModal() {
+        document.getElementById('addPostModal').style.display = 'flex'; // Make sure this line works.
+    }
+
+    function closeAddPostModal() {
+        document.getElementById('addPostModal').style.display = 'none';
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postContent').value = '';
+    }
+
 
     function openPopup(postId, postTitle,postContent) {
         currentPostId = postId;

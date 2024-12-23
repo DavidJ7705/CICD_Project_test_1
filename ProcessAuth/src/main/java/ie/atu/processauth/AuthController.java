@@ -95,4 +95,11 @@ public class AuthController {
         return authService.isModerator();
     }
 
+    @GetMapping("/user/{username}/id")
+    public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
+        Long userId = authService.getUserIdByUsername(username);
+        return ResponseEntity.ok(userId);
+    }
+
+
 }
