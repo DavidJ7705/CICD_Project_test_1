@@ -48,6 +48,7 @@ public class ModulePageService {
     }
 
     public List<Module> getModuleByCourse(Long courseId){
+        long selectedCourseId = mainClient.getSelectedCourse();
         return moduleRepository.findByCourseId(courseId);
     }
 
@@ -110,7 +111,10 @@ public class ModulePageService {
         if (!authClient.isModerator()){
             return "Fail";
         }
-        Module updatedModule = moduleRepository.findByModuleId(id);
+
+        Module updatedModule = moduleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Module not found: " + id));
+
         updatedModule.setName(module.getName());
         updatedModule.setDescription(module.getDescription());
         updatedModule.setCourseId(updatedModule.getCourseId());
