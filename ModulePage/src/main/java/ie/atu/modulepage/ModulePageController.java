@@ -60,8 +60,9 @@ public class ModulePageController {
     }
 
     @GetMapping("/getModuleName")
-    public String getModuleName(){
-        return moduleService.getModuleName();
+    public ResponseEntity<List<Map<String, String>>> getModuleName(){
+        List<Map<String, String>> response = moduleService.getModuleName();
+        return ResponseEntity.ok(response);
     }
 
     // Add a new module

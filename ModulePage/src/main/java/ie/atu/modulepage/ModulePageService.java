@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ModulePageService {
@@ -91,8 +92,16 @@ public class ModulePageService {
         return selectedModuleId;
     }
 
-    public String getModuleName(){
-        return selectedModule;
+    public List<Map<String, String>> getModuleName(){
+
+        return moduleRepository.findAll().stream()
+                .map(module -> {
+                    Map<String, String> moduleMap = new HashMap<>();
+                    moduleMap.put("id", String.valueOf(module.getId()));
+                    moduleMap.put("name", module.getName());
+                    return moduleMap;
+                })
+                .collect(Collectors.toList());
     }
 
     // Add a new module

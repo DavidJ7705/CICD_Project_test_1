@@ -65,10 +65,6 @@ public class MainPageController {
         return courseService.getSelectedCourseId();
     }
 
-    @GetMapping("/getCourseName")
-    public String getCourseName(){
-        return courseService.getCourseName();
-    }
     @GetMapping("/SignUpCourses")
     public ResponseEntity<List<Map<String, String>>> SignUpCourses() {
         List<Map<String, String>> response = courseService.SignUpCourses(); // Assume it returns a List<Map>
@@ -78,6 +74,12 @@ public class MainPageController {
     @GetMapping("/getProfileCourse")
     public String getProfileCourse(){
         return courseService.getProfileCourse();
+    }
+
+    @GetMapping("/getCombinedNames")
+    public List<Map<String, String>> getCombinedNames() {
+        List<Map<String, String>> response = courseService.getCombinedNames();
+        return ResponseEntity.ok(response).getBody();
     }
 }
 

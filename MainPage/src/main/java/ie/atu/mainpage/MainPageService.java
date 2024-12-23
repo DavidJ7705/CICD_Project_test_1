@@ -1,6 +1,7 @@
 package ie.atu.mainpage;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,12 +15,15 @@ public class MainPageService {
     private AuthClient authClient;
     private CourseRepository courseRepository;
 
+    private ModuleClient moduleClient;
+
     private long selectedCourseId;
     private String selectedCourse;
 
-    public MainPageService(CourseRepository courseRepository, AuthClient authClient) {
+    public MainPageService(CourseRepository courseRepository, AuthClient authClient, ModuleClient moduleCLient) {
         this.courseRepository = courseRepository;
         this.authClient = authClient;
+        this.moduleClient = moduleCLient;
     }
 
     // Get all courses
@@ -124,10 +128,6 @@ public class MainPageService {
         return selectedCourseId;
     }
 
-    public String getCourseName(){
-        return selectedCourse;
-    }
-
     public List<Map<String, String>> SignUpCourses() {
         return courseRepository.findAll().stream()
                 .map(course -> {
@@ -143,5 +143,25 @@ public class MainPageService {
         Course course = courseRepository.findById(authClient.getCourseIdByUsername())
             .orElseThrow(() -> new RuntimeException("Course not found for id: " + authClient.getCourseIdByUsername()));
         return course.getName();
+    }
+
+    public List<Map<String, String>> getCombinedNames() {
+        List<Map<String, String>> combinedList = new ArrayList<>();
+
+        // Fetch modules and add the "type" field
+        List<Map<String, String>> modules = moduleClient.getModuleName();
+        for (Map<String, String> module : modules) {
+            module.put("type", "module"); // Add the "type" field as "module"
+            combinedList.add(module);
+        }
+
+        // Fetch courses and add the "type" field
+        List<Map<String, String>> courses = SignUpCourses();
+        for (Map<String, String> course : courses) {
+            course.put("type", "course"); // Add the "type" field as "course"
+            combinedList.add(course);
+        }
+
+        return combinedList;
     }
 }

@@ -63,8 +63,4 @@ public class ProfilePageService {
 
         return authClient.updateUserDetails(username, name, email, courseId);
     }
-
-    public Map<String, String> getUserComment() {
-    }
-
 }
