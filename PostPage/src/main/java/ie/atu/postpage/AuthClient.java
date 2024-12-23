@@ -11,4 +11,6 @@ public interface AuthClient {
     String getSignedName();
     @GetMapping("/signedEmail")
     String getSignedEmail();
+    @GetMapping("/userType")
+    boolean isModerator();
 }
