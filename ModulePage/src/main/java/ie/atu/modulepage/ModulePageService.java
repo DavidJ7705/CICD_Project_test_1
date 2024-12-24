@@ -17,6 +17,8 @@ public class ModulePageService {
     private MainClient mainClient;
 
     private long selectedModuleId;
+
+    private long selectedCourseId;
     private String selectedModule;
 
     public ModulePageService(ModuleRepository moduleRepository, AuthClient authClient, MainClient mainClient) {
@@ -38,14 +40,13 @@ public class ModulePageService {
         Module module = moduleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Module not found: " + id));
 
-        selectedModuleId = id;
-        selectedModule = module.getName();
-
+        this.selectedModuleId = id;
+        this.selectedModule = module.getName();
         return module;
     }
 
     public List<Module> getModuleByCourse(Long courseId){
-        long selectedCourseId = mainClient.getSelectedCourse();
+        this.selectedCourseId = courseId;
         return moduleRepository.findByCourseId(courseId);
     }
 
@@ -103,7 +104,7 @@ public class ModulePageService {
         if (!authClient.isModerator()){
             return "Fail";
         }
-        long selectedCourseId = mainClient.getSelectedCourse();
+
         Module newModule = new Module (name, selectedCourseId, description);
         moduleRepository.save(newModule);
         return "Success";
