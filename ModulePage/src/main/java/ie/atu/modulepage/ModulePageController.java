@@ -95,4 +95,9 @@ public class ModulePageController {
         moduleService.deleteModule(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/getCombinedNames")
+    public List<Map<String, String>> getCombinedNames() {
+        List<Map<String, String>> response = moduleService.getCombinedNames();
+        return ResponseEntity.ok(response).getBody();
+    }
 }
