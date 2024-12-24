@@ -26,7 +26,16 @@ public class PostPageController {
         Map<String, Object> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
-
+    @GetMapping("/getall")
+    public ResponseEntity<Map<String, Object>> getAllCourses() {
+        Map<String, Object> response = postService.getAllCourses();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/getallmodules")
+    public ResponseEntity<Map<String, Object>> getAllModules() {
+        Map<String, Object> modules = postService.getAllModules();
+        return ResponseEntity.ok(modules);
+    }
     //This will return all posts under specific module, which user clicks on the module page.
     @GetMapping ("/getPostsBySelectedCourse")
     public ResponseEntity<Map<String, Object>> getPostsBySelectedCourse() {

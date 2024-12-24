@@ -10,6 +10,6 @@ public interface ModuleClient {
 
     @GetMapping("/getModuleName")
     String getModuleName();
-
-
+    @GetMapping("/getallmodules")
+    String getAllModules();
 }
