@@ -41,7 +41,20 @@ public class PostPageService {
 
         return response;
     }
+    public Map<String, Object> getAllCourses() {
+        String courses = mainClient.getAllCourses();
+        Map<String, Object> response = new HashMap<>();
+        response.put("Courses", courses);
+        return response;
+    }
+    public Map<String, Object> getAllModules() {
+        String modules = moduleClient.getAllModules();
+        System.out.println("Fetched modules: " + modules);
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("modules",modules);
+        return response;
+    }
     public Map<String, Object> getPostsBySelectedCourse(){
         String signedUser = authClient.getSignedUsername();
         String selectedCourse = mainClient.getCourseName();

@@ -97,24 +97,50 @@
             overflow-y: auto;
         }
 
-        .sidebar-left h3 {
+        .sidebar-left h3, .sidebar-right h3 {
             color: #b92b27;
             margin-bottom: 10px;
             font-size: 20px;
             text-align: center;
         }
-
-        .course-item {
-            font-size: 16px;
-            margin: 5px 0;
-            cursor: pointer;
-            color: #333;
-            transition: color 0.3s ease;
+        .feed-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .course-item:hover {
+        .feed-item p {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .feed-item span {
+            font-size: 14px;
+            color: #777;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .feed-item a {
             color: #b92b27;
-            text-decoration: underline;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: 1px solid #b92b27;
+            border-radius: 5px;
+            background: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .feed-item a:hover {
+            background: #b92b27;
+            color: #fff;
         }
 
         .content-center {
@@ -372,9 +398,7 @@
     <!-- Left Sidebar -->
     <div class="sidebar-left">
         <h3>All Courses</h3>
-        <div id="course-list">
-            <p>Loading courses...</p>
-        </div>
+        <div id="all-courses"></div>
     </div>
 
     <!-- Center Content -->
@@ -390,8 +414,8 @@
 
     <!-- Right Sidebar -->
     <div class="sidebar-right">
-        <h3>Other Features</h3>
-        <p>Additional content can go here.</p>
+        <h3>All Modules</h3>
+        <div id="all-modules"></div>
     </div>
 </main>
 
@@ -532,30 +556,106 @@
     }
 
     window.onload = function () {
-        // Fetch courses for the sidebar
-        fetch('/courses')
+        const allCoursesDiv = document.getElementById('all-courses');
+        const allModulesDiv = document.getElementById('all-modules');
+
+        function displayMessage(targetDiv, message, isError = false) {
+            const p = document.createElement('p');
+            p.textContent = message;
+            p.style.color = isError ? 'red' : 'green'; // Red for errors, green for success
+            targetDiv.appendChild(p);
+        }
+        // Fetch All Courses
+        fetch('/post/getall')
             .then(response => response.json())
-            .then(courses => {
-                const courseList = document.getElementById('course-list');
-                courseList.innerHTML = '';
-                if (courses.length > 0) {
+            .then(data => {
+                displayMessage(allCoursesDiv, 'Successfully fetched courses.');
+                let courses;
+                try {
+                    courses = JSON.parse(data.Courses).Courses;
+                } catch (error) {
+                    displayMessage(allCoursesDiv, `Error parsing courses: ${error.message}`, true);
+                    return;
+                }
+
+                if (Array.isArray(courses) && courses.length > 0) {
+                    allCoursesDiv.innerHTML = ''; // Clear placeholder content
                     courses.forEach(course => {
                         const courseItem = document.createElement('div');
-                        courseItem.classList.add('course-item');
-                        courseItem.textContent = course.name;
-                        courseItem.onclick = () => {
-                            window.location.href = `/courses/${course.id}/modules`;
-                        };
-                        courseList.appendChild(courseItem);
+                        courseItem.classList.add('feed-item');
+
+                        const courseName = document.createElement('p');
+                        courseName.textContent = course.name;
+                        courseItem.appendChild(courseName);
+
+                        const courseDescription = document.createElement('span');
+                        courseDescription.textContent = course.description;
+                        courseItem.appendChild(courseDescription);
+
+                        const enterButton = document.createElement('a');
+                        enterButton.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`;
+                        enterButton.textContent = 'Enter';
+                        enterButton.classList.add('module-enter-button');
+                        courseItem.appendChild(enterButton);
+
+                        allCoursesDiv.appendChild(courseItem);
                     });
                 } else {
-                    courseList.innerHTML = '<p>No courses available.</p>';
+                    displayMessage(allCoursesDiv, 'No courses found.', true);
                 }
             })
             .catch(error => {
-                document.getElementById('course-list').innerHTML = '<p>Error loading courses. Please try again later.</p>';
+                displayMessage(allCoursesDiv, `Error fetching courses: ${error.message}`, true);
             });
+        function renderItems(data, container, type = 'course') {
+            if (Array.isArray(data)) {
+                container.innerHTML = ''; // Clear the container
+                if (data.length === 0) {
+                    container.innerHTML = `<p>No ${type}s available at the moment.</p>`;
+                } else {
+                    data.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.classList.add('feed-item');
 
+                        const itemName = document.createElement('p');
+                        itemName.textContent = item.name;
+                        itemDiv.appendChild(itemName);
+
+                        const itemDescription = document.createElement('p');
+                        itemDescription.textContent = item.description;
+                        itemDescription.style.fontSize = '14px';
+                        itemDescription.style.color = '#555';
+                        itemDiv.appendChild(itemDescription);
+
+                        const enterButton = document.createElement('a');
+                        enterButton.href = `http://localhost:8081/module/view/by${type}/${item.id}`;
+                        enterButton.textContent = 'Enter';
+                        itemDiv.appendChild(enterButton);
+
+                        container.appendChild(itemDiv);
+                    });
+                }
+            } else {
+                container.innerHTML = `<p>Error: ${type} data is not in an expected format.</p>`;
+                console.error(`${type} data is not an array:`, data);
+            }
+        }
+        // Fetch all modules
+        fetch('/post/getallmodules')
+            .then(response => response.json())
+            .then(data => {
+                try {
+                    const modulesData = JSON.parse(data.modules);
+                    renderItems(modulesData.modules, allModulesDiv, 'module');
+                } catch (e) {
+                    allModulesDiv.innerHTML = `<p>Error parsing modules data: ${e.message}</p>`;
+                    console.error('Error parsing modules data:', e);
+                }
+            })
+            .catch(error => {
+                allModulesDiv.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
+                console.error('Error fetching modules:', error);
+            });
         // Fetch posts for the module
         const pathParts = window.location.pathname.split('/');
         const moduleId = pathParts[pathParts.length - 1];

@@ -11,4 +11,6 @@ public interface MainClient {
 
     @GetMapping("/getCourseName")
     String getCourseName();
+    @GetMapping("/getall")
+    String getAllCourses();
 }
