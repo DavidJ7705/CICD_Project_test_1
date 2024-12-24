@@ -229,6 +229,32 @@
       background-color: #b92b27;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     }
+    .dropdown {
+      position: absolute;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      max-width: 400px;
+      width: 60%;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      margin-top: 25px; /* Add margin to push dropdown slightly below */
+    }
+
+    .dropdown-item {
+      padding: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .dropdown-item:hover {
+      background: #b92b27;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -241,8 +267,8 @@
 
 
   <div class="search-bar">
-    <input type="text" placeholder="Search across the site...">
-
+    <input id="searchInput" type="text" placeholder="Search across the site..." oninput="searchCourses()" />
+    <div id="dropdown" class="dropdown"></div>
   </div>
 
   <div class="profile-section">
@@ -294,6 +320,7 @@
 </footer>
 
 <script>
+  let courses = []; // Will hold all available course
   window.onload = function () {
     const allCoursesDiv = document.getElementById('all-courses');
     const allModulesDiv = document.getElementById('all-modules');
@@ -403,12 +430,56 @@
               profileButton.appendChild(errorMessage);
             });
   };
-
+  fetch('http://localhost:8081/module/getCombinedNames')
+          .then(response => response.json())
+          .then(data => {
+            courses = data; // Populate the courses array with the response
+          })
+          .catch(error => console.error('Error fetching combined names:', error));
 
 
 
   document.getElementById('profileButton').addEventListener('click', () => {
     window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
+  });
+  function searchCourses() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const dropdown = document.getElementById('dropdown');
+    dropdown.innerHTML = ''; // Clear the dropdown
+
+    if (input) {
+      const filteredCourses = courses.filter(course => course.name.toLowerCase().includes(input));
+      if (filteredCourses.length > 0) {
+        dropdown.style.display = 'block'; // Show the dropdown
+        filteredCourses.forEach(course => {
+          const dropdownItem = document.createElement('div');
+          dropdownItem.classList.add('dropdown-item');
+          dropdownItem.textContent = course.name;
+          dropdownItem.addEventListener('click', () => {
+            // Check if it's a course or a module and redirect accordingly
+            if (course.type === 'course') {
+              window.location.href = `http://localhost:8081/module/view/bycourse/${course.id}`;
+            } else if (course.type === 'module') {
+              window.location.href = `http://localhost:8082/post/view/module/${course.id}`;
+            }
+          });
+          dropdown.appendChild(dropdownItem);
+        });
+      } else {
+        dropdown.style.display = 'none'; // Hide the dropdown if no matches
+      }
+    } else {
+      dropdown.style.display = 'none'; // Hide the dropdown if input is empty
+    }
+  }
+
+
+  // Hide dropdown if clicked outside
+  document.addEventListener('click', function (event) {
+    const dropdown = document.getElementById('dropdown');
+    if (!event.target.closest('.search-bar')) {
+      dropdown.style.display = 'none';
+    }
   });
 </script>
 </body>

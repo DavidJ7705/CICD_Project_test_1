@@ -2,6 +2,7 @@ package ie.atu.modulepage;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,5 +131,23 @@ public class ModulePageService {
     public void deleteModule(Long id) {
         moduleRepository.deleteById(id);
     }
+    public List<Map<String, String>> getCombinedNames() {
+        List<Map<String, String>> combinedList = new ArrayList<>();
 
+        // Fetch modules and add the "type" field
+        List<Map<String, String>> modules = getModuleName();
+        for (Map<String, String> module : modules) {
+            module.put("type", "module"); // Add the "type" field as "module"
+            combinedList.add(module);
+        }
+
+        // Fetch courses and add the "type" field
+        List<Map<String, String>> courses = mainClient.SignUpCourses();
+        for (Map<String, String> course : courses) {
+            course.put("type", "course"); // Add the "type" field as "course"
+            combinedList.add(course);
+        }
+
+        return combinedList;
+    }
 }
