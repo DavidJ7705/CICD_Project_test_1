@@ -20,6 +20,13 @@ public class PostPageController {
     }
 
 
+    @GetMapping("/comments/{username}")
+    public ResponseEntity<List<Comments>>getCommentsByUsername(@PathVariable String username){
+        List<Comments>comments=postService.getCommentsByUsername(username);
+        return ResponseEntity.ok(comments);
+    }
+
+
     //This will return all the posts regardless of what module it is from.
     @GetMapping("/getAll")
     public ResponseEntity<Map<String, Object>> getAllPosts(){

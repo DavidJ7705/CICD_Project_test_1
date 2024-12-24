@@ -9,4 +9,5 @@ import java.util.List;
 public interface CommentsRepository extends JpaRepository<Comments, Long> {
     // Custom methods if needed
     List<Comments>findByPostId(Long postId);
+    List<Comments>findByUsername(String username);
 }

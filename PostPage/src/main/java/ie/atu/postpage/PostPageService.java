@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.PublicKey;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -142,6 +143,12 @@ public class PostPageService {
         List <Post> userPosts = postRepository.findByUsername(username);
         return userPosts;
     }
+
+    public List<Comments> getCommentsByUsername(String username){
+        return commentsRepository.findByUsername(username);
+
+    }
+
     public List<Post> getPostsById(){
         String username = authClient.getSignedUsername();
         List<Likes> likes = likesRepository.findByUsername(username);

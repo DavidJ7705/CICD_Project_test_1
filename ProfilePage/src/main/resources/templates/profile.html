@@ -295,21 +295,25 @@
           });
 
   // Fetch user comments
-  fetch('/main/getUserComments')
+  fetch('/profile/comments')
           .then(response => response.json())
           .then(comments => {
             const commentList = document.getElementById('commentList');
+
             if (comments.length === 0) {
               commentList.innerHTML = '<p>No comments to display.</p>';
             } else {
               comments.forEach(comment => {
                 const commentElement = document.createElement('div');
                 commentElement.classList.add('comment');
-                commentElement.textContent = comment.content;
+                commentElement.innerHTML = `
+          <div class="comment-content">${comment.comment}</div>
+        `;
                 commentList.appendChild(commentElement);
               });
             }
-          });
+          })
+.catch(error => console.error("Error fetching comments: ", error));
 
   // Back button functionality
   document.getElementById('backButton').addEventListener('click', () => {
