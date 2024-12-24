@@ -246,41 +246,78 @@
 </footer>
 
 <script>
-    // Helper function to render items (courses or modules)
-    function renderItems(data, container, type = 'course') {
+    // Function to render courses
+    function renderCourses(data, container) {
         if (Array.isArray(data)) {
             container.innerHTML = ''; // Clear the container
             if (data.length === 0) {
-                container.innerHTML = `<p>No ${type}s available at the moment.</p>`;
+                container.innerHTML = `<p>No courses available at the moment.</p>`;
             } else {
-                data.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.classList.add('feed-item');
+                data.forEach(course => {
+                    const courseDiv = document.createElement('div');
+                    courseDiv.classList.add('feed-item');
 
-                    const itemName = document.createElement('p');
-                    itemName.textContent = item.name;
-                    itemDiv.appendChild(itemName);
+                    const courseName = document.createElement('p');
+                    courseName.textContent = course.name;
+                    courseDiv.appendChild(courseName);
 
-                    const itemDescription = document.createElement('p');
-                    itemDescription.textContent = item.description;
-                    itemDescription.style.fontSize = '14px';
-                    itemDescription.style.color = '#555';
-                    itemDiv.appendChild(itemDescription);
+                    const courseDescription = document.createElement('p');
+                    courseDescription.textContent = course.description;
+                    courseDescription.style.fontSize = '14px';
+                    courseDescription.style.color = '#555';
+                    courseDiv.appendChild(courseDescription);
 
                     const enterButton = document.createElement('a');
-                    enterButton.href = `http://localhost:8081/module/view/by${type}/${item.id}`;
+                    enterButton.href = `http://localhost:8081/module/view/bycourse/${course.courseId}`;
                     enterButton.textContent = 'Enter';
-                    itemDiv.appendChild(enterButton);
+                    enterButton.classList.add('module-enter-button');
+                    courseDiv.appendChild(enterButton);
 
-                    container.appendChild(itemDiv);
+                    container.appendChild(courseDiv);
                 });
             }
         } else {
-            container.innerHTML = `<p>Error: ${type} data is not in an expected format.</p>`;
-            console.error(`${type} data is not an array:`, data);
+            container.innerHTML = `<p>Error: course data is not in an expected format.</p>`;
+            console.error(`Course data is not an array:`, data);
         }
     }
 
+    // Function to render modules
+    function renderModules(data, container) {
+        if (Array.isArray(data)) {
+            container.innerHTML = ''; // Clear the container
+            if (data.length === 0) {
+                container.innerHTML = `<p>No modules available at the moment.</p>`;
+            } else {
+                data.forEach(module => {
+                    const moduleDiv = document.createElement('div');
+                    moduleDiv.classList.add('feed-item');
+
+                    const moduleName = document.createElement('p');
+                    moduleName.textContent = module.name;
+                    moduleDiv.appendChild(moduleName);
+
+                    const moduleDescription = document.createElement('p');
+                    moduleDescription.textContent = module.description;
+                    moduleDescription.style.fontSize = '14px';
+                    moduleDescription.style.color = '#555';
+                    moduleDiv.appendChild(moduleDescription);
+
+                    const enterButton = document.createElement('a');
+                    enterButton.href = `http://localhost:8082/post/view/module/${module.id}`;
+                    enterButton.textContent = 'Enter';
+                    moduleDiv.appendChild(enterButton);
+
+                    container.appendChild(moduleDiv);
+                });
+            }
+        } else {
+            container.innerHTML = `<p>Error: module data is not in an expected format.</p>`;
+            console.error(`Module data is not an array:`, data);
+        }
+    }
+
+    // Fetch and render data on window load
     window.onload = function () {
         const allCoursesDiv = document.getElementById('all-courses');
         const allModulesDiv = document.getElementById('all-modules');
@@ -289,7 +326,7 @@
         // Fetch all courses
         fetch('/main/getall')
             .then(response => response.json())
-            .then(data => renderItems(data.Courses, allCoursesDiv, 'course'))
+            .then(data => renderCourses(data.Courses, allCoursesDiv))
             .catch(error => {
                 console.error('Error fetching courses:', error);
                 allCoursesDiv.innerHTML = `<p>Error fetching courses: ${error.message}</p>`;
@@ -333,7 +370,7 @@
             .then(data => {
                 try {
                     const modulesData = JSON.parse(data.modules);
-                    renderItems(modulesData.modules, allModulesDiv, 'module');
+                    renderModules(modulesData.modules, allModulesDiv);
                 } catch (e) {
                     allModulesDiv.innerHTML = `<p>Error parsing modules data: ${e.message}</p>`;
                     console.error('Error parsing modules data:', e);
@@ -343,20 +380,7 @@
                 allModulesDiv.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
                 console.error('Error fetching modules:', error);
             });
-
-        // Fetch and set user info
-        fetch('/main/getSignedInUser')
-            .then(response => response.json())
-            .then(userData => {
-                document.getElementById('userName').textContent = userData.Name;
-                document.getElementById('userEmail').textContent = userData.Email;
-            })
-            .catch(error => console.error('Error fetching user info:', error));
     };
-
-    document.getElementById('profileButton').addEventListener('click', () => {
-        window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
-    });
 </script>
 </body>
 </html>
