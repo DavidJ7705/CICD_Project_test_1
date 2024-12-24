@@ -13,4 +13,9 @@ public interface MainClient {
 
     @GetMapping("/getProfileCourse")
     public String getProfileCourse();
+
+    @GetMapping("/SignUpCourses")
+    List<Map<String, String>> getSignUpCourses();
+
+
 }

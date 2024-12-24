@@ -235,8 +235,9 @@
   <div class="popup-body">
     <input type="text" id="editName" placeholder="Name">
     <input type="email" id="editEmail" placeholder="Email">
-    <input type="number" id="editCourse" placeholder="Course ID">
-  </div>
+    <select id="editCourse">
+      <option value="" disabled selected>Select your course</option>
+    </select>  </div>
   <div class="popup-footer">
     <button id="saveChanges">Save</button>
     <button id="cancelEdit">Cancel</button>
@@ -315,10 +316,33 @@
     window.location.href = 'http://localhost:8080/main/viewall';
   });
 
-  // Edit Profile functionality
   document.getElementById('editProfileButton').addEventListener('click', () => {
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('editProfilePopup').style.display = 'block';
+
+    const currentCourse = document.getElementById('course').textContent.trim(); // Get current course name from the profile
+
+
+    fetch('/profile/courses')
+            .then(response => response.json())
+            .then(courses => {
+              const editCourseDropdown = document.getElementById('editCourse');
+              editCourseDropdown.innerHTML = '<option value="" disabled selected>Select your course</option>';
+
+              courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.name;
+
+                // Preselect the user's current course
+                if (course.name === currentCourse) {
+                  option.selected = true;
+                }
+
+                editCourseDropdown.appendChild(option);
+              });
+            })
+            .catch(error => console.error('Error fetching courses:', error));
   });
 
   document.getElementById('cancelEdit').addEventListener('click', () => {
@@ -334,12 +358,12 @@
     fetch('/profile/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, courseId }),
+      body: JSON.stringify({ name, email, courseId })
     })
             .then(() => {
               document.getElementById('name').textContent = name;
               document.getElementById('email').textContent = email;
-              document.getElementById('course').textContent = courseId;
+              document.getElementById('course').textContent = document.getElementById('editCourse').selectedOptions[0].textContent;
               document.getElementById('overlay').style.display = 'none';
               document.getElementById('editProfilePopup').style.display = 'none';
               alert('Profile updated successfully!');
