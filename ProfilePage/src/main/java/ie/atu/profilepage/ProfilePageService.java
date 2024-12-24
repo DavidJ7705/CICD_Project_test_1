@@ -63,4 +63,9 @@ public class ProfilePageService {
 
         return authClient.updateUserDetails(username, name, email, courseId);
     }
+
+    public List<Map<String, String>> getAllCourses() {
+        return mainClient.getSignUpCourses();
+    }
+
 }

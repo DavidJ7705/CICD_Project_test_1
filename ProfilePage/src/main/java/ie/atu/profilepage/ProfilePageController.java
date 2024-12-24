@@ -2,6 +2,7 @@ package ie.atu.profilepage;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 @RequestMapping("/profile")
 @RestController
@@ -31,4 +32,10 @@ public class ProfilePageController {
     public String updateProfile(@RequestBody Map<String, Object> updatedDetails) {
         return profilePageService.updateProfile(updatedDetails);
     }
+
+    @GetMapping("/courses")
+    public List<Map<String, String>> getCourses() {
+        return profilePageService.getAllCourses();
+    }
+
 }
