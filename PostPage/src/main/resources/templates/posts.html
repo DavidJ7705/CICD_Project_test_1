@@ -607,55 +607,63 @@
             .catch(error => {
                 displayMessage(allCoursesDiv, `Error fetching courses: ${error.message}`, true);
             });
-        function renderItems(data, container, type = 'course') {
-            if (Array.isArray(data)) {
-                container.innerHTML = ''; // Clear the container
-                if (data.length === 0) {
-                    container.innerHTML = `<p>No ${type}s available at the moment.</p>`;
-                } else {
-                    data.forEach(item => {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.classList.add('feed-item');
+        function fetchAndRenderModules(container) {
+            // Fetch the modules data
+            fetch('/post/getallmodules')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    try {
+                        // Parse modules data
+                        const parsedData = JSON.parse(data.modules);
+                        const modules = parsedData.modules;
 
-                        const itemName = document.createElement('p');
-                        itemName.textContent = item.name;
-                        itemDiv.appendChild(itemName);
+                        // Check if the data is an array and render items
+                        if (Array.isArray(modules)) {
+                            container.innerHTML = ''; // Clear the container
+                            if (modules.length === 0) {
+                                container.innerHTML = `<p>No modules available at the moment.</p>`;
+                            } else {
+                                modules.forEach(module => {
+                                    const moduleDiv = document.createElement('div');
+                                    moduleDiv.classList.add('feed-item');
 
-                        const itemDescription = document.createElement('p');
-                        itemDescription.textContent = item.description;
-                        itemDescription.style.fontSize = '14px';
-                        itemDescription.style.color = '#555';
-                        itemDiv.appendChild(itemDescription);
+                                    const moduleName = document.createElement('p');
+                                    moduleName.textContent = module.name;
+                                    moduleDiv.appendChild(moduleName);
 
-                        const enterButton = document.createElement('a');
-                        enterButton.href = `http://localhost:8081/module/view/by${type}/${item.id}`;
-                        enterButton.textContent = 'Enter';
-                        itemDiv.appendChild(enterButton);
+                                    const moduleDescription = document.createElement('p');
+                                    moduleDescription.textContent = module.description;
+                                    moduleDescription.style.fontSize = '14px';
+                                    moduleDescription.style.color = '#555';
+                                    moduleDiv.appendChild(moduleDescription);
 
-                        container.appendChild(itemDiv);
-                    });
-                }
-            } else {
-                container.innerHTML = `<p>Error: ${type} data is not in an expected format.</p>`;
-                console.error(`${type} data is not an array:`, data);
-            }
+                                    const enterButton = document.createElement('a');
+                                    enterButton.href = `http://localhost:8082/post/view/module/${module.id}`;
+                                    enterButton.textContent = 'Enter';
+                                    moduleDiv.appendChild(enterButton);
+
+                                    container.appendChild(moduleDiv);
+                                });
+                            }
+                        } else {
+                            throw new Error(`Module data is not an array.`);
+                        }
+                    } catch (e) {
+                        container.innerHTML = `<p>Error parsing module data: ${e.message}</p>`;
+                        console.error('Error parsing module data:', e);
+                    }
+                })
+                .catch(error => {
+                    container.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
+                    console.error('Error fetching modules:', error);
+                });
         }
-        // Fetch all modules
-        fetch('/post/getallmodules')
-            .then(response => response.json())
-            .then(data => {
-                try {
-                    const modulesData = JSON.parse(data.modules);
-                    renderItems(modulesData.modules, allModulesDiv, 'module');
-                } catch (e) {
-                    allModulesDiv.innerHTML = `<p>Error parsing modules data: ${e.message}</p>`;
-                    console.error('Error parsing modules data:', e);
-                }
-            })
-            .catch(error => {
-                allModulesDiv.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
-                console.error('Error fetching modules:', error);
-            });
+        fetchAndRenderModules(allModulesDiv);
         // Fetch posts for the module
         const pathParts = window.location.pathname.split('/');
         const moduleId = pathParts[pathParts.length - 1];
