@@ -1,5 +1,6 @@
 package ie.atu.profilepage;
 
+import ie.atu.profilepage.dto.Comments;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,4 +39,9 @@ public class ProfilePageController {
         return profilePageService.getAllCourses();
     }
 
+    @GetMapping("/comments")
+    public List<Comments>   getUsersComments(){
+        return profilePageService.getUsersComments();
+
+    }
 }

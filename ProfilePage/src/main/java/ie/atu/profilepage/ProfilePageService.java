@@ -1,5 +1,6 @@
 package ie.atu.profilepage;
 
+import ie.atu.profilepage.dto.Comments;
 import ie.atu.profilepage.dto.Post;
 import org.springframework.stereotype.Service;
 
@@ -68,4 +69,10 @@ public class ProfilePageService {
         return mainClient.getSignUpCourses();
     }
 
+    public List<Comments>getUsersComments()
+    {
+        String username = authClient.getSignedUsername()    ;
+        return postClient.getCommentsByUsername(username);
+
+    }
 }

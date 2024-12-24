@@ -1,8 +1,10 @@
 package ie.atu.profilepage;
 
+import ie.atu.profilepage.dto.Comments;
 import ie.atu.profilepage.dto.Post;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -12,4 +14,8 @@ public interface PostClient {
     List<Post> getPostsByUsername();
     @GetMapping("/like")
     List<Post> getPostsById();
+
+    @GetMapping("comments/{username}")
+    List<Comments>getCommentsByUsername(@PathVariable String username);
+
 }
