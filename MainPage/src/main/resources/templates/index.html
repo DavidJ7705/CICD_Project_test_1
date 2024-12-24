@@ -380,6 +380,23 @@
                 allModulesDiv.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
                 console.error('Error fetching modules:', error);
             });
+        // Fetch Signed In User Info
+        fetch('/main/getSignedInUser')
+            .then(response => response.json())
+            .then(userData => {
+                document.getElementById('userName').textContent = userData.Name || "Name not found";
+                document.getElementById('userEmail').textContent = userData.Email || "Email not found";
+            })
+            .catch(error => {
+                const profileButton = document.getElementById('profileButton');
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = `Error fetching user info: ${error.message}`;
+                errorMessage.style.color = 'red';
+                profileButton.appendChild(errorMessage);
+            });
+        document.getElementById('profileButton').addEventListener('click', () => {
+            window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
+        });
     };
 </script>
 </body>
