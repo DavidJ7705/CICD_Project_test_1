@@ -178,6 +178,25 @@ public class PostPageService {
 
         return response;
     }
+    public List<Map<String, String>> getCombinedNames() {
+        List<Map<String, String>> combinedList = new ArrayList<>();
+
+        // Fetch modules and add the "type" field
+        List<Map<String, String>> modules = moduleClient.getModuleName();
+        for (Map<String, String> module : modules) {
+            module.put("type", "module"); // Add the "type" field as "module"
+            combinedList.add(module);
+        }
+
+        // Fetch courses and add the "type" field
+        List<Map<String, String>> courses = mainClient.SignUpCourses();
+        for (Map<String, String> course : courses) {
+            course.put("type", "course"); // Add the "type" field as "course"
+            combinedList.add(course);
+        }
+
+        return combinedList;
+    }
 
 
 }
