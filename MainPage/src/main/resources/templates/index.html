@@ -445,8 +445,11 @@
         }
     }
 
-    // Fetch and render data on window load
     window.onload = function () {
+        const allCoursesDiv = document.getElementById('all-courses');
+        const allModulesDiv = document.getElementById('all-modules');
+        const userCourseList = document.getElementById('user-course-list');
+
         // Check if the user is a moderator
         fetch('/main/isModerator')
             .then(response => response.json())
@@ -459,23 +462,7 @@
             })
             .catch(error => console.error('Error fetching user role:', error));
 
-        // Fetch and display user profile info
-        fetch('/main/getSignedInUser')
-            .then(response => response.json())
-            .then(userData => {
-                document.getElementById('userName').textContent = userData.Name || "Name not found";
-                document.getElementById('userEmail').textContent = userData.Email || "Email not found";
-            })
-            .catch(error => {
-                const profileButton = document.getElementById('profileButton');
-                const errorMessage = document.createElement('p');
-                errorMessage.textContent = `Error fetching user info: ${error.message}`;
-                errorMessage.style.color = 'red';
-                profileButton.appendChild(errorMessage);
-            });
-
-        // Fetch courses
-        const allCoursesDiv = document.getElementById('all-courses');
+        // Fetch all courses
         fetch('/main/getall')
             .then(response => response.json())
             .then(data => renderCourses(data.Courses, allCoursesDiv))
@@ -484,7 +471,7 @@
                 allCoursesDiv.innerHTML = `<p>Error fetching courses: ${error.message}</p>`;
             });
 
-        const userCourseList = document.getElementById('user-course-list');
+        // Fetch user-specific modules
         fetch('/main/userCourse')
             .then(response => response.json())
             .then(data => {
@@ -513,12 +500,10 @@
             })
             .catch(error => {
                 console.error('Error fetching user-specific modules:', error);
-                userCourseList.innerHTML = <p>Error fetching user-specific modules: ${error.message}</p>;
+                userCourseList.innerHTML = `<p>Error fetching user-specific modules: ${error.message}</p>`;
             });
 
-
-        // Fetch modules
-        const allModulesDiv = document.getElementById('all-modules');
+        // Fetch all modules
         fetch('/main/getallmodules')
             .then(response => response.json())
             .then(data => {
@@ -534,17 +519,26 @@
                 allModulesDiv.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
                 console.error('Error fetching modules:', error);
             });
-        fetch('http://localhost:8081/main/getCombinedNames')
+        // Fetch Signed In User Info
+        fetch('/main/getSignedInUser')
+            .then(response => response.json())
+            .then(userData => {
+                document.getElementById('userName').textContent = userData.Name || "Name not found";
+                document.getElementById('userEmail').textContent = userData.Email || "Email not found";
+            })
+            .catch(error => {
+                const profileButton = document.getElementById('profileButton');
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = `Error fetching user info: ${error.message}`;
+                errorMessage.style.color = 'red';
+                profileButton.appendChild(errorMessage);
+            });
+        fetch('http://localhost:8080/main/getCombinedNames')
             .then(response => response.json())
             .then(data => {
                 courses = data; // Populate the courses array with the response
             })
             .catch(error => console.error('Error fetching combined names:', error));
-
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', searchCourses);
-
-        // Profile button redirection
         document.getElementById('profileButton').addEventListener('click', () => {
             window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
         });
