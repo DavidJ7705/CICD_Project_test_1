@@ -15,6 +15,6 @@ public interface ModuleClient {
     String getModuleName();
     @GetMapping("/getallmodules")
     String getAllModules();
-    @GetMapping("/getModuleName")
-    List<Map<String, String>> getModuleName();
+    @GetMapping("/getModuleNames")
+    List<Map<String, String>> getModuleNames();
 }
