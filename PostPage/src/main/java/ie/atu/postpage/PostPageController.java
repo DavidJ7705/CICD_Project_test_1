@@ -130,4 +130,9 @@ public class PostPageController {
         List<Comments> comments = postService.getCommentsForPost(postId);
         return ResponseEntity.ok(comments);
     }
+    @GetMapping("/getCombinedNames")
+    public List<Map<String, String>> getCombinedNames() {
+        List<Map<String, String>> response = postService.getCombinedNames();
+        return ResponseEntity.ok(response).getBody();
+    }
 }
