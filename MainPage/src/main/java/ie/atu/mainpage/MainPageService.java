@@ -146,7 +146,7 @@ public class MainPageService {
                 })
                 .collect(Collectors.toList());
     }
-
+    //what
     public String getProfileCourse() {
         Course course = courseRepository.findById(authClient.getCourseIdByUsername())
             .orElseThrow(() -> new RuntimeException("Course not found for id: " + authClient.getCourseIdByUsername()));
