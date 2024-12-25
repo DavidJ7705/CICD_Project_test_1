@@ -70,6 +70,91 @@
             background-color: #b92b27;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
+        header .profile-section #addCourseButton {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        #addCourseModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: gray;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        #addCourseModal h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #b92b27;
+            text-align: center;
+        }
+
+        #addCourseModal form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #addCourseModal input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            resize: none;
+        }
+
+        #addCourseModal button[type="submit"],
+        #addCourseModal button[type="button"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        #addCourseModal button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+
+        #addCourseModal button[type="button"] {
+            background-color: #b92b27;
+            color: white;
+        }
+
+        #modalBackdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+        }
 
         main {
             display: flex;
@@ -243,14 +328,16 @@
         <input id="searchInput" type="text" placeholder="Search across the site..." oninput="searchCourses()" />
         <div id="dropdown" class="dropdown"></div>
     </div>
-
     <div class="profile-section">
         <button id="profileButton">
             <h4 id="userName">User's Name</h4>
             <p id="userEmail">User's Email</p>
         </button>
+
+        <button id="addCourseButton"  onclick="openAddCourseModal()">+</button>
     </div>
 </header>
+
 <main>
     <div class="sidebar-left">
         <h3>All Courses</h3>
@@ -264,6 +351,18 @@
         <h3>All Modules</h3>
         <div id="all-modules"></div>
     </div>
+
+    <div id="addCourseModal">
+        <h3>Add a New Course</h3>
+        <form id="addCourseForm">
+            <input type="text" id="courseName" placeholder="Course Name" required>
+            <input type="text" id="courseDescription" placeholder="Course Description" required>
+            <button type="submit">Add Course</button>
+            <button type="button" onclick="closeAddCourseModal()">Cancel</button>
+        </form>
+    </div>
+    <div id="modalBackdrop" onclick="closeAddCourseModal()"></div>
+
 </main>
 <footer>
     <ul>
@@ -348,11 +447,35 @@
 
     // Fetch and render data on window load
     window.onload = function () {
-        const allCoursesDiv = document.getElementById('all-courses');
-        const allModulesDiv = document.getElementById('all-modules');
-        const userCourseList = document.getElementById('user-course-list');
+        // Check if the user is a moderator
+        fetch('/main/isModerator')
+            .then(response => response.json())
+            .then(isModerator => {
+                if (isModerator) {
+                    document.getElementById('addCourseButton').style.display = 'inline-block';
+                } else {
+                    document.getElementById('addCourseButton').style.display = "none";
+                }
+            })
+            .catch(error => console.error('Error fetching user role:', error));
 
-        // Fetch all courses
+        // Fetch and display user profile info
+        fetch('/main/getSignedInUser')
+            .then(response => response.json())
+            .then(userData => {
+                document.getElementById('userName').textContent = userData.Name || "Name not found";
+                document.getElementById('userEmail').textContent = userData.Email || "Email not found";
+            })
+            .catch(error => {
+                const profileButton = document.getElementById('profileButton');
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = `Error fetching user info: ${error.message}`;
+                errorMessage.style.color = 'red';
+                profileButton.appendChild(errorMessage);
+            });
+
+        // Fetch courses
+        const allCoursesDiv = document.getElementById('all-courses');
         fetch('/main/getall')
             .then(response => response.json())
             .then(data => renderCourses(data.Courses, allCoursesDiv))
@@ -361,39 +484,8 @@
                 allCoursesDiv.innerHTML = `<p>Error fetching courses: ${error.message}</p>`;
             });
 
-        // Fetch user-specific modules
-        fetch('/main/userCourse')
-            .then(response => response.json())
-            .then(data => {
-                if (data.courseDetails) {
-                    const moduleItem = document.createElement('div');
-                    moduleItem.classList.add('module-item');
-
-                    const moduleName = document.createElement('h3');
-                    moduleName.textContent = data.courseDetails.name;
-                    moduleItem.appendChild(moduleName);
-
-                    const moduleDescription = document.createElement('p');
-                    moduleDescription.textContent = data.courseDetails.description;
-                    moduleItem.appendChild(moduleDescription);
-
-                    const enterButton = document.createElement('a');
-                    enterButton.href = `http://localhost:8081/module/view/bycourse/${data.courseDetails.courseId}`;
-                    enterButton.textContent = 'Enter';
-                    enterButton.classList.add('module-enter-button');
-                    moduleItem.appendChild(enterButton);
-
-                    userCourseList.appendChild(moduleItem);
-                } else {
-                    userCourseList.innerHTML = '<p>No modules assigned to your feed.</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching user-specific modules:', error);
-                userCourseList.innerHTML = `<p>Error fetching user-specific modules: ${error.message}</p>`;
-            });
-
-        // Fetch all modules
+        // Fetch modules
+        const allModulesDiv = document.getElementById('all-modules');
         fetch('/main/getallmodules')
             .then(response => response.json())
             .then(data => {
@@ -409,30 +501,17 @@
                 allModulesDiv.innerHTML = `<p>Error fetching modules: ${error.message}</p>`;
                 console.error('Error fetching modules:', error);
             });
-        // Fetch Signed In User Info
-        fetch('/main/getSignedInUser')
-            .then(response => response.json())
-            .then(userData => {
-                document.getElementById('userName').textContent = userData.Name || "Name not found";
-                document.getElementById('userEmail').textContent = userData.Email || "Email not found";
-            })
-            .catch(error => {
-                const profileButton = document.getElementById('profileButton');
-                const errorMessage = document.createElement('p');
-                errorMessage.textContent = `Error fetching user info: ${error.message}`;
-                errorMessage.style.color = 'red';
-                profileButton.appendChild(errorMessage);
-            });
-        fetch('http://localhost:8080/main/getCombinedNames')
-            .then(response => response.json())
-            .then(data => {
-                courses = data; // Populate the courses array with the response
-            })
-            .catch(error => console.error('Error fetching combined names:', error));
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', searchCourses);
+
+        // Profile button redirection
         document.getElementById('profileButton').addEventListener('click', () => {
             window.location.href = 'http://localhost:8085/view-profile'; // Adjust the URL to your profile page endpoint
         });
     };
+
+
     function searchCourses() {
         const input = document.getElementById('searchInput').value.toLowerCase();
         const dropdown = document.getElementById('dropdown');
@@ -472,6 +551,43 @@
             dropdown.style.display = 'none';
         }
     });
+
+    function openAddCourseModal() {
+        document.getElementById('addCourseModal').style.display = 'block';
+        document.getElementById('modalBackdrop').style.display = 'block';
+    }
+
+    function closeAddCourseModal() {
+        document.getElementById('addCourseModal').style.display = 'none';
+        document.getElementById('modalBackdrop').style.display = 'none';
+    }
+
+    document.getElementById('addCourseForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const courseData = {
+            name: document.getElementById('courseName').value,
+            description: document.getElementById('courseDescription').value
+        };
+
+        fetch('/main/addCourse', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(courseData)
+        })
+            .then(response => response.text())
+            .then(result => {
+                alert(result);
+                if (result.includes('added')) {
+                    location.reload(); // Reload the page to reflect the new course
+                }
+            })
+            .catch(error => alert('Error: ' + error));
+    });
+
+
 </script>
 </body>
 </html>

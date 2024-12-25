@@ -172,4 +172,9 @@ public class MainPageService {
 
         return combinedList;
     }
+
+    public boolean isModerator() {
+        return authClient.isModerator();
+    }
 }
+

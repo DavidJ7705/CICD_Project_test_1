@@ -150,4 +150,8 @@ public class ModulePageService {
 
         return combinedList;
     }
+
+    public boolean isModerator() {
+        return authClient.isModerator();
+    }
 }
