@@ -100,4 +100,9 @@ public class ModulePageController {
         List<Map<String, String>> response = moduleService.getCombinedNames();
         return ResponseEntity.ok(response).getBody();
     }
+
+    @GetMapping("/isModerator")
+    public boolean isModerator(){
+        return moduleService.isModerator();
+    }
 }

@@ -88,5 +88,10 @@ public class MainPageController {
         List<Map<String, String>> response = courseService.getCombinedNames();
         return ResponseEntity.ok(response).getBody();
     }
+
+    @GetMapping("/isModerator")
+    public boolean isModerator(){
+        return courseService.isModerator();
+    }
 }
 
