@@ -1,5 +1,6 @@
 package ie.atu.mainpage;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,7 @@ public class MainPageController {
     }
     //This happens when you click a specific course on the webpage. It then will redirect you to the module page, where it will be a list of modules of that specific course the user clicked.
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
+    public ResponseEntity<Course> getCourseById(@Valid @PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
     @GetMapping("/getSignedInUser")
@@ -48,21 +49,21 @@ public class MainPageController {
 
     // Add a new course
     @PostMapping("/addCourse")
-    public String addCourse(@RequestBody Course course) {
+    public String addCourse(@Valid @RequestBody Course course) {
         String response = courseService.addCourse(course.getName(), course.getDescription());
         return response;
     }
 
     // Update a course
     @PutMapping("/updateCourse/{id}")
-    public String updateCourse(@PathVariable Long id, @RequestBody Course updatedCourse) {
+    public String updateCourse(@Valid @PathVariable Long id, @Valid @RequestBody Course updatedCourse) {
         String response = courseService.updateCourse(id, updatedCourse);
         return response;
     }
 
     // Delete a course
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCourse(@Valid @PathVariable Long id) {
         courseService.deleteCourse(id);
         return ResponseEntity.noContent().build();
     }

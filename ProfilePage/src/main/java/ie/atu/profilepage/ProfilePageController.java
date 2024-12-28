@@ -1,6 +1,7 @@
 package ie.atu.profilepage;
 
 import ie.atu.profilepage.dto.Comments;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class ProfilePageController {
     }
 
     @PutMapping("/update")
-    public String updateProfile(@RequestBody Map<String, Object> updatedDetails) {
+    public String updateProfile(@Valid @RequestBody Map<String, Object> updatedDetails) {
         return profilePageService.updateProfile(updatedDetails);
     }
 

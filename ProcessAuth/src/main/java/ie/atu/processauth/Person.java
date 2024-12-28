@@ -1,32 +1,40 @@
 package ie.atu.processauth;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Size(min = 2, max = 100, message = "Name should be between 2 and 100 characters")
     private String name;
 
+    @NotNull(message = "Username cannot be null")
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters")
     private String userName;
 
+    @Email(message = "Email should be valid")
     private String email;
 
+    @NotNull(message = "Password cannot be null")
+    @Size(min = 3, message = "Password should be at least 3 characters")
     private String password;
 
+    @NotNull(message = "Course ID cannot be null")
     private int courseId;
-    //1 for user, 2 for mod
+
+    // 1 for user, 2 for mod
     private int userType = 1;
+
     public Person() {
     }
 
@@ -35,7 +43,7 @@ public class Person {
         this.userName = userName;
         this.email = email;
         this.password = password;
-        this.courseId= courseId;
+        this.courseId = courseId;
         this.userType = 1;
     }
 
@@ -94,6 +102,4 @@ public class Person {
     public void setUserType(int userType) {
         this.userType = userType;
     }
-
-
 }

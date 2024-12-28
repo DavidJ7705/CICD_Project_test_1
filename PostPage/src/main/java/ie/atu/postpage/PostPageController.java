@@ -1,5 +1,6 @@
 package ie.atu.postpage;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class PostPageController {
 
 
     @GetMapping("/comments/{username}")
-    public ResponseEntity<List<Comments>>getCommentsByUsername(@PathVariable String username){
+    public ResponseEntity<List<Comments>>getCommentsByUsername(@Valid @PathVariable String username){
         List<Comments>comments=postService.getCommentsByUsername(username);
         return ResponseEntity.ok(comments);
     }
@@ -53,7 +54,7 @@ public class PostPageController {
 
     // Get posts by module ID
     @GetMapping("/module/{moduleId}")
-    public ResponseEntity<List<Post>> getPostsByModule(@PathVariable Long moduleId) {
+    public ResponseEntity<List<Post>> getPostsByModule(@Valid @PathVariable Long moduleId) {
         return ResponseEntity.ok(postService.getPostsByModuleId(moduleId));
     }
 
@@ -79,13 +80,13 @@ public class PostPageController {
 
     // Update a post
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
+    public ResponseEntity<Post> updatePost(@Valid @PathVariable Long id, @Valid @RequestBody Post updatedPost) {
         return ResponseEntity.ok(postService.updatePost(id, updatedPost));
     }
 
     // Delete a post
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePost(@Valid @PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
@@ -99,7 +100,7 @@ public class PostPageController {
     // Add a like
 
     @PostMapping("/{postId}/like")
-    public ResponseEntity<String> toggleLike(@PathVariable Long postId){
+    public ResponseEntity<String> toggleLike(@Valid @PathVariable Long postId){
         Likes like = postService.toggleLike(postId);
         if (like == null) {
             return ResponseEntity.ok("Like removed successfully.");
@@ -118,7 +119,7 @@ public class PostPageController {
         return ResponseEntity.ok(postService.getPostsById());
     }
     @GetMapping("/module/{moduleId}/detailed")
-    public ResponseEntity<List<Map<String, Object>>> getPostsAUserLiked(@PathVariable Long moduleId) {
+    public ResponseEntity<List<Map<String, Object>>> getPostsAUserLiked(@Valid @PathVariable Long moduleId) {
         String currentUsername = authClient.getSignedUsername();
         List<Map<String, Object>> posts = postService.getPostsAUserLiked(moduleId, currentUsername);
         return ResponseEntity.ok(posts);
@@ -126,7 +127,7 @@ public class PostPageController {
 
     // Fetch comments for a specific post
     @GetMapping("/{postId}/comments")
-    public ResponseEntity<List<Comments>> getCommentsForPost(@PathVariable Long postId) {
+    public ResponseEntity<List<Comments>> getCommentsForPost(@Valid @PathVariable Long postId) {
         List<Comments> comments = postService.getCommentsForPost(postId);
         return ResponseEntity.ok(comments);
     }

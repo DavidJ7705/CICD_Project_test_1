@@ -1,5 +1,6 @@
 package ie.atu.processauth;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class AuthController {
 
     // Sign-up endpoint
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody Person person) {
+    public ResponseEntity<String> signUp(@Valid @RequestBody Person person) {
         String response = authService.signUp(person.getName(), person.getUserName(), person.getEmail(), person.getPassword(), person.getCourseId());
         if (response.startsWith("User signed up successfully!")) {
             return ResponseEntity.ok("success");  // Just return success
@@ -34,7 +35,7 @@ public class AuthController {
     // Login endpoint with redirect
     // Login endpoint with simplified response
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Person person) {
+    public ResponseEntity<String> login(@Valid @RequestBody Person person) {
         String response = authService.login(person.getUserName(), person.getPassword());
         if (response.startsWith("Login successful!")) {
             return ResponseEntity.ok("success");  // Just return success
@@ -49,7 +50,7 @@ public class AuthController {
 
     //update based on user id
     @PutMapping("/update/{userId}")
-    public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody Person updatedPerson) {
+    public ResponseEntity<String> updateUser(@Valid @PathVariable Long userId, @Valid @RequestBody Person updatedPerson) {
         String response = authService.updateUser(userId, updatedPerson);
         return ResponseEntity.ok(response);
     }
@@ -57,7 +58,7 @@ public class AuthController {
 
     //update for the front end
     @PutMapping("/update/{username}")
-    public ResponseEntity<String> updateUser(@PathVariable String username, @RequestParam String name,@RequestParam String email,@RequestParam int courseId ){
+    public ResponseEntity<String> updateUser(@Valid @PathVariable String username, @Valid @RequestParam String name,@Valid @RequestParam String email,@Valid @RequestParam int courseId ){
         String response = authService.updateUserDetails(username, name, email, courseId);
         return ResponseEntity.ok(response);
     }
@@ -96,7 +97,7 @@ public class AuthController {
     }
 
     @GetMapping("/user/{username}/id")
-    public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
+    public ResponseEntity<Long> getUserIdByUsername(@Valid @PathVariable String username) {
         Long userId = authService.getUserIdByUsername(username);
         return ResponseEntity.ok(userId);
     }
