@@ -2,6 +2,8 @@ package ie.atu.postpage;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Likes {
@@ -10,11 +12,13 @@ public class Likes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Like ID
 
+    @NotNull(message = "Post reference cannot be null")
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     @JsonBackReference
     private Post post; // Reference to the Post entity
 
+    @NotBlank(message = "Username is required")
     @Column(nullable = false)
     private String username; // Username of the user who liked the post
 

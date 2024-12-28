@@ -1,5 +1,6 @@
 package ie.atu.modulepage;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +36,12 @@ public class ModulePageController {
 
     // Get a specific module
     @GetMapping("/bymodule/{id}")
-    public ResponseEntity<Module> getModuleById(@PathVariable Long id) {
+    public ResponseEntity<Module> getModuleById(@Valid @PathVariable Long id) {
         return ResponseEntity.ok(moduleService.getModuleById(id));
     }
 
     @GetMapping("/bycourse/{courseId}")
-    public ResponseEntity<List<Module>>getModuleByCourse(@PathVariable Long courseId){
+    public ResponseEntity<List<Module>>getModuleByCourse(@Valid @PathVariable Long courseId){
         List<Module> modules = moduleService.getModuleByCourse(courseId);
         return ResponseEntity.ok(modules);
     }
@@ -67,7 +68,7 @@ public class ModulePageController {
 
     // Add a new module
     @PostMapping("/addModule")
-    public ResponseEntity<String> addModule(@RequestBody Module module) {
+    public ResponseEntity<String> addModule(@Valid @RequestBody Module module) {
         String response = moduleService.addModule(module.getName(), module.getDescription());
         if ((response.startsWith("Success"))){
             return ResponseEntity.ok(response);
@@ -79,7 +80,7 @@ public class ModulePageController {
 
     // Update a module
     @PutMapping("/updateModule/{id}")
-    public ResponseEntity<String> updateModule(@PathVariable Long id, @RequestBody Module module) {
+    public ResponseEntity<String> updateModule(@Valid @PathVariable Long id, @Valid @RequestBody Module module) {
         String response = moduleService.updateModule(id, module);
         if ((response.startsWith("Success"))){
             return ResponseEntity.ok(response);
@@ -91,7 +92,7 @@ public class ModulePageController {
 
     // Delete a module
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteModule(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteModule(@Valid @PathVariable Long id) {
         moduleService.deleteModule(id);
         return ResponseEntity.noContent().build();
     }

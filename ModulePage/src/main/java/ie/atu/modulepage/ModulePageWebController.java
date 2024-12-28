@@ -1,5 +1,6 @@
 package ie.atu.modulepage;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,7 @@ public class ModulePageWebController {
         this.modulePageService = modulePageService;
     }
     @GetMapping("/module/view/bycourse/{courseId}")
-    public String ShowModulesForCourse(@PathVariable Long courseId, Model model) {
+    public String ShowModulesForCourse(@Valid @PathVariable Long courseId, Model model) {
         model.addAttribute("modules", modulePageService.getModuleByCourse(courseId));
         return "modules";
     }

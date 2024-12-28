@@ -1,26 +1,31 @@
 package ie.atu.postpage;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
 
-
 @Entity
 @Data
-
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Module ID is required")
     @Column(name = "module_id")
     private Long moduleId;
 
+    @NotBlank(message = "Title is required")
     @Column(nullable = false)
     private String title;
 
+    @Size(max = 1000, message = "Content cannot exceed 1000 characters")
     @Column(length = 1000)
     private String content;
 
@@ -35,11 +40,12 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likes;
 
-
+    @NotNull(message = "User ID is required")
     @Column(nullable = false)
     private Long userId;
 
-    public Post(){}
+    public Post() {
+    }
 
     public Post(Long id, String title, String content, Long moduleId, Long userId, String username) {
         this.id = id;
@@ -73,6 +79,7 @@ public class Post {
     public void setContent(String content) {
         this.content = content;
     }
+
     public List<Comments> getComments() {
         return comments;
     }

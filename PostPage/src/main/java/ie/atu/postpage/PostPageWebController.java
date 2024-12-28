@@ -1,5 +1,6 @@
 package ie.atu.postpage;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ public class PostPageWebController {
     }
 
     @GetMapping("/post/view/module/{moduleId}")
-    public String ShowPostsForModules(@PathVariable Long moduleId, Model model) {
+    public String ShowPostsForModules(@Valid @PathVariable Long moduleId, Model model) {
         model.addAttribute(" posts", postPageService.getPostsByModuleId(moduleId));
         return "posts"; // Return the "posts" view name
     }
