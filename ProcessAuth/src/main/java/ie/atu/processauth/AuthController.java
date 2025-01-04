@@ -47,13 +47,14 @@ public class AuthController {
     }
 
 
+    /*
 
     //update based on user id
     @PutMapping("/update/{userId}")
     public ResponseEntity<String> updateUser(@Valid @PathVariable Long userId, @Valid @RequestBody Person updatedPerson) {
         String response = authService.updateUser(userId, updatedPerson);
         return ResponseEntity.ok(response);
-    }
+    } */
 
 
     //update for the front end

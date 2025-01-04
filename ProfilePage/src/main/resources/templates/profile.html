@@ -357,7 +357,7 @@
   document.getElementById('saveChanges').addEventListener('click', () => {
     const name = document.getElementById('editName').value;
     const email = document.getElementById('editEmail').value;
-    const courseId = document.getElementById('editCourse').value;
+    const courseId = parseInt(document.getElementById('editCourse').value); // Ensure integer type
 
     fetch('/profile/update', {
       method: 'PUT',

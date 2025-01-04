@@ -57,13 +57,24 @@ public class ProfilePageService {
     }
 
     public String updateProfile(Map<String, Object> updatedDetails) {
-        String username = (String) updatedDetails.get("username");
+        // Debug logs for troubleshooting
+        String username = authClient.getSignedUsername(); // Retrieve username
+        System.out.println("Fetched username: " + username);
+
+        if (username == null || username.isEmpty()) {
+            throw new RuntimeException("Username is null or empty! Please check AuthClient or session.");
+        }
+
         String name = (String) updatedDetails.get("name");
         String email = (String) updatedDetails.get("email");
         int courseId = (int) updatedDetails.get("courseId");
 
+        System.out.println("Sending Feign request: username=" + username + ", name=" + name + ", email=" + email + ", courseId=" + courseId);
+
         return authClient.updateUserDetails(username, name, email, courseId);
     }
+
+
 
     public List<Map<String, String>> getAllCourses() {
         return mainClient.getSignUpCourses();
