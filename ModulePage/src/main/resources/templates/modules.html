@@ -516,7 +516,30 @@
                   enterButton.textContent = 'Enter';
                   enterButton.classList.add('module-enter-button');
                   moduleItem.appendChild(enterButton);
+                  // Only show delete button if the user is a moderator
+                  fetch('/module/isModerator')
+                          .then(response => response.json())
+                          .then(isModerator => {
+                            if (isModerator) {
+                              const deleteButton = document.createElement('button');
+                              deleteButton.textContent = 'Delete';
+                              deleteButton.style.backgroundColor = '#b92b27';
+                              deleteButton.style.color = 'white';
+                              deleteButton.style.border = 'none';
+                              deleteButton.style.padding = '5px 10px';
+                              deleteButton.style.marginLeft = '10px';
+                              deleteButton.style.borderRadius = '5px';
+                              deleteButton.style.cursor = 'pointer';
 
+                              deleteButton.onclick = function () {
+                                if (confirm(`Are you sure you want to delete "${module.name}"?`)) {
+                                  deleteModule(module.id);
+                                }
+                              };
+                              moduleItem.appendChild(deleteButton);
+                            }
+                          })
+                          .catch(error => console.error('Error fetching user role:', error));
                   allModulesDiv.appendChild(moduleItem);
                 });
               } else {
@@ -586,6 +609,31 @@
     }
   }
 
+
+  function deleteModule(id) {
+    fetch(`/module/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+            .then(response => {
+              if (response.ok) {
+                alert('Module deleted successfully!');
+                setTimeout(() => {
+                  window.location.reload();
+                });
+              } else {
+                return response.text().then(errorMessage => {
+                  alert(`Failed to delete the Module: ${errorMessage}`);
+                });
+              }
+            })
+            .catch(error => {
+              console.error('Error deleting module:', error);
+              alert('An unexpected error occurred. Check the console for details.');
+            });
+  }
 
   // Hide dropdown if clicked outside
   document.addEventListener('click', function (event) {
