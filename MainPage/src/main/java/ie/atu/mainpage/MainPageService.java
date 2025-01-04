@@ -148,8 +148,15 @@ public class MainPageService {
     }
     //what
     public String getProfileCourse() {
-        Course course = courseRepository.findById(authClient.getCourseIdByUsername())
-            .orElseThrow(() -> new RuntimeException("Course not found for id: " + authClient.getCourseIdByUsername()));
+        Long courseId = authClient.getCourseIdByUsername();
+
+        if (courseId == null || courseId <= 0) {
+            throw new RuntimeException("Invalid or missing course ID: " + courseId);
+        }
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found for id: " + courseId));
+
         return course.getName();
     }
 
