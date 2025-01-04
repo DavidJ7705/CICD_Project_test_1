@@ -117,6 +117,10 @@ public class AuthService {
         if (courseId != 0) person.setCourseId(courseId);
 
         personRepository.save(person);
+        SignedUsername = username;
+        SignedName = name;
+        SignedEmail = email;
+        SignedCourse = courseId;
         return "User updated successfully!";
     }
 
