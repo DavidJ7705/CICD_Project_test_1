@@ -376,6 +376,7 @@
 <script>
 
     let courses = []; // Will hold all available course
+
     // Function to render courses
     function renderCourses(data, container) {
         if (Array.isArray(data)) {
@@ -402,6 +403,31 @@
                     enterButton.textContent = 'Enter';
                     enterButton.classList.add('module-enter-button');
                     courseDiv.appendChild(enterButton);
+
+                    // Only show delete button if the user is a moderator
+                    fetch('/main/isModerator')
+                        .then(response => response.json())
+                        .then(isModerator => {
+                            if (isModerator) {
+                                const deleteButton = document.createElement('button');
+                                deleteButton.textContent = 'Delete';
+                                deleteButton.style.backgroundColor = '#b92b27';
+                                deleteButton.style.color = 'white';
+                                deleteButton.style.border = 'none';
+                                deleteButton.style.padding = '5px 10px';
+                                deleteButton.style.marginLeft = '10px';
+                                deleteButton.style.borderRadius = '5px';
+                                deleteButton.style.cursor = 'pointer';
+
+                                deleteButton.onclick = function () {
+                                    if (confirm(`Are you sure you want to delete "${course.name}"?`)) {
+                                        deleteCourse(course.courseId);
+                                    }
+                                };
+                                courseDiv.appendChild(deleteButton);
+                            }
+                        })
+                        .catch(error => console.error('Error fetching user role:', error));
 
                     container.appendChild(courseDiv);
                 });
@@ -576,6 +602,31 @@
         } else {
             dropdown.style.display = 'none'; // Hide the dropdown if input is empty
         }
+    }
+
+    function deleteCourse(courseId) {
+        fetch(`/main/${courseId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Course deleted successfully!');
+                    setTimeout(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    return response.text().then(errorMessage => {
+                        alert(`Failed to delete the course: ${errorMessage}`);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting course:', error);
+                alert('An unexpected error occurred. Check the console for details.');
+            });
     }
 
 
